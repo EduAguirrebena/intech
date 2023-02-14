@@ -16,12 +16,7 @@
 
     <link
       rel="shortcut icon"
-      href="./assets/images/logo/favicon.svg"
-      type="image/x-icon"
-    />
-    <link
-      rel="shortcut icon"
-      href="./assets/images/logo/favicon.png"
+      href="./assets/images/logo/intech_logo.png"
       type="image/png"
     />
 

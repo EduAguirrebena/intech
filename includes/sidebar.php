@@ -3,9 +3,9 @@
   <div class="sidebar-wrapper active">
     <div class="sidebar-header position-relative">
       <div class="d-flex justify-content-between align-items-center">
-        <div class="logo">
+        <div class="logo col-7">
           <a href="index.php"
-            ><img src="./assets/images/logo/logo.svg" alt="Logo" srcset=""
+            ><img src="./assets/images/logo/intech_horizontal.png" alt="Logo" srcset=""
           /></a>
         </div>
 
@@ -119,13 +119,13 @@
           </a>
           <ul class="submenu">
             <li class="submenu-item">
-              <a href="extra-component-avatar.html">Proximos Eventos</a>
+              <a href="proximosEventos.php">Proximos Eventos</a>
             </li>
             <li class="submenu-item">
-              <a href="extra-component-sweetalert.html">Crear Evento</a>
+              <a href="">Crear Evento</a>
             </li>
             <li class="submenu-item">
-              <a href="extra-component-sweetalert.html">Eventos pasados</a>
+              <a href="">Eventos pasados</a>
             </li>
           </ul>
         </li>
