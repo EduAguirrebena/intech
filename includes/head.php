@@ -14,6 +14,9 @@
       crossorigin="anonymous" referrerpolicy="no-referrer"
     />
 
+    <!-- data table -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
     <link
       rel="shortcut icon"
       href="./assets/images/logo/intech_logo.png"

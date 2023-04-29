@@ -131,6 +131,34 @@
         </li>
 
         <?php
+        if($active == 'personal' || $active == 'personal2'){
+          echo '<li class="sidebar-item active">';
+        }else{
+          echo '<li class="sidebar-item">';
+        }
+        ?>
+          <a href="personal.php" class="sidebar-link">
+            <i class="fa-solid fa-user"></i>
+            <!-- <i class="bi bi-person-check"></i> -->
+            <span>Personal</span>
+          </a>
+        </li>
+
+        <?php
+        if($active == 'vehiculos'){
+          echo '<li class="sidebar-item active">';
+        }else{
+          echo '<li class="sidebar-item">';
+        }
+        ?>
+          <a href="vehiculos.php" class="sidebar-link">
+            <i class="fa-solid fa-truck"></i>
+            <!-- <i class="bi bi-person-check"></i> -->
+            <span>Vehiculos</span>
+          </a>
+        </li>
+
+        <?php
         if($active == '1' || $active == '2'){
           echo '<li class="sidebar-item has-sub active">';
         }else{
@@ -161,7 +189,7 @@
           <a href="index.php" class="sidebar-link">
             <i class="fa-solid fa-users-gear"></i>
             <!-- <i class="bi bi-person-check"></i> -->
-            <span>usuarios</span>
+            <span>Administración</span>
           </a>
         </li>
 
