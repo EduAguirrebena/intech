@@ -17,6 +17,9 @@
     <!-- data table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
 
+    <!-- script xlsx -->
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
     <link
       rel="shortcut icon"
       href="./assets/images/logo/intech_logo.png"
