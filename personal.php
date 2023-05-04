@@ -33,6 +33,7 @@ $arregloPersonal = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9,10],[2,3,4,5,6,7,8,
                     >
                         Agregar personal
                     </button>
+                    <button class="btn mt-2" onclick="ExportToExcel('xlsx')"><h4>Exportar a Excel</h4></button>
                 </div>
             </div>
         </div>
@@ -246,6 +247,52 @@ $arregloPersonal = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9,10],[2,3,4,5,6,7,8,
               fixedHeader: true
           } );
       } );
+
+      const arregloPersonal = <?php echo json_encode($arregloPersonal); ?>;
+      
+
+      function ExportToExcel(type, fn, dl) {
+
+        // var elt = document.getElementById('example');
+        // console.log(elt);
+
+        var elt = `<table class="table" id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">Nombre</th>
+                        <th style="text-align: center;">Apellido</th>
+                        <th style="text-align: center;">Rut</th>
+                        <th style="text-align: center;">Email</th>
+                        <th style="text-align: center;">Telefono</th>
+                        <th style="text-align: center;">Cargo</th>
+                        <th style="text-align: center;">Especialidad</th>
+                        <th style="text-align: center;">Tipo Contrato</th>
+                        <th style="text-align: center;">Disponibilidad</th>
+                        <th style="text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>`
+
+        arregloPersonal.map((data) => {
+            // console.log(data);
+            elt = elt + '<tr>'
+            data.forEach(dato => {
+                elt = elt + `<td align="center">${dato}</td>`
+            });
+            elt = elt + '</tr>'
+        })
+
+        elt = elt + `</tbody>
+                    </table>`;
+        
+        console.log(elt);
+        
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64'}):
+            XLSX.writeFile(wb, fn || (`example.` + (type || 'xlsx')));
+        }
+
     </script>
 
   </body>
