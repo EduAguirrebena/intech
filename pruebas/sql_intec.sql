@@ -5,21 +5,21 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema intech
+-- Schema intec
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema intech
+-- Schema intec
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `intech` DEFAULT CHARACTER SET utf8 ;
-USE `intech` ;
+CREATE SCHEMA IF NOT EXISTS `intec` DEFAULT CHARACTER SET utf8 ;
+USE `intec` ;
 
 -- -----------------------------------------------------
--- Table `intech`.`categoria`
+-- Table `intec`.`categoria`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`categoria` ;
+DROP TABLE IF EXISTS `intec`.`categoria` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`categoria` (
+CREATE TABLE IF NOT EXISTS `intec`.`categoria` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `desc` TEXT NOT NULL,
@@ -32,11 +32,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`item`
+-- Table `intec`.`item`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`item` ;
+DROP TABLE IF EXISTS `intec`.`item` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`item` (
+CREATE TABLE IF NOT EXISTS `intec`.`item` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `item` VARCHAR(45) NULL,
   `createAt` DATE NOT NULL,
@@ -47,36 +47,36 @@ CREATE TABLE IF NOT EXISTS `intech`.`item` (
 
 
 -- -----------------------------------------------------
--- Table `intech`.`categoria_has_item`
+-- Table `intec`.`categoria_has_item`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`categoria_has_item` ;
+DROP TABLE IF EXISTS `intec`.`categoria_has_item` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`categoria_has_item` (
+CREATE TABLE IF NOT EXISTS `intec`.`categoria_has_item` (
   `id` INT NOT NULL,
   `categoria_id` INT NOT NULL,
   `item_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `categoria_id`, `item_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_categoria_has_item_item1_idx` (`item_id` ASC),
   INDEX `fk_categoria_has_item_categoria1_idx` (`categoria_id` ASC),
   CONSTRAINT `fk_categoria_has_item_categoria1`
     FOREIGN KEY (`categoria_id`)
-    REFERENCES `intech`.`categoria` (`id`)
+    REFERENCES `intec`.`categoria` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_categoria_has_item_item1`
     FOREIGN KEY (`item_id`)
-    REFERENCES `intech`.`item` (`id`)
+    REFERENCES `intec`.`item` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`marca`
+-- Table `intec`.`marca`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`marca` ;
+DROP TABLE IF EXISTS `intec`.`marca` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`marca` (
+CREATE TABLE IF NOT EXISTS `intec`.`marca` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `marca` VARCHAR(45) NOT NULL,
   `createAt` DATE NOT NULL,
@@ -87,11 +87,11 @@ CREATE TABLE IF NOT EXISTS `intech`.`marca` (
 
 
 -- -----------------------------------------------------
--- Table `intech`.`producto`
+-- Table `intec`.`producto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`producto` ;
+DROP TABLE IF EXISTS `intec`.`producto` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`producto` (
+CREATE TABLE IF NOT EXISTS `intec`.`producto` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `desc` TEXT NOT NULL,
@@ -109,23 +109,23 @@ CREATE TABLE IF NOT EXISTS `intech`.`producto` (
   INDEX `fk_producto_marca1_idx` (`marca_id` ASC),
   CONSTRAINT `fk_producto_categoria_has_item1`
     FOREIGN KEY (`categoria_has_item_id`)
-    REFERENCES `intech`.`categoria_has_item` (`id`)
+    REFERENCES `intec`.`categoria_has_item` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_producto_marca1`
     FOREIGN KEY (`marca_id`)
-    REFERENCES `intech`.`marca` (`id`)
+    REFERENCES `intec`.`marca` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`pais`
+-- Table `intec`.`pais`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`pais` ;
+DROP TABLE IF EXISTS `intec`.`pais` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`pais` (
+CREATE TABLE IF NOT EXISTS `intec`.`pais` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `pais` VARCHAR(45) NOT NULL,
   `codigo` VARCHAR(45) NULL,
@@ -134,74 +134,93 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`region`
+-- Table `intec`.`region`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`region` ;
+DROP TABLE IF EXISTS `intec`.`region` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`region` (
+CREATE TABLE IF NOT EXISTS `intec`.`region` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `region` VARCHAR(45) NOT NULL,
   `codigo` VARCHAR(45) NOT NULL,
   `numero` INT NOT NULL,
   `pais_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `pais_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_region_pais1_idx` (`pais_id` ASC),
   CONSTRAINT `fk_region_pais1`
     FOREIGN KEY (`pais_id`)
-    REFERENCES `intech`.`pais` (`id`)
+    REFERENCES `intec`.`pais` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`direccion`
+-- Table `intec`.`comuna`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`direccion` ;
+DROP TABLE IF EXISTS `intec`.`comuna` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`direccion` (
+CREATE TABLE IF NOT EXISTS `intec`.`comuna` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `comuna` VARCHAR(45) NOT NULL,
+  `region_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_comuna_region1_idx` (`region_id` ASC),
+  CONSTRAINT `fk_comuna_region1`
+    FOREIGN KEY (`region_id`)
+    REFERENCES `intec`.`region` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`direccion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`direccion` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`direccion` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `direccion` VARCHAR(45) NOT NULL,
   `numero` VARCHAR(45) NOT NULL,
-  `dpto` VARCHAR(45) NULL,
   `extra` VARCHAR(45) NULL,
+  `dpto` VARCHAR(45) NULL,
   `postal_code` VARCHAR(45) NULL,
-  `region_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `region_id`),
-  INDEX `fk_direccion_region1_idx` (`region_id` ASC),
-  CONSTRAINT `fk_direccion_region1`
-    FOREIGN KEY (`region_id`)
-    REFERENCES `intech`.`region` (`id`)
+  `comuna_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_direccion_comuna1_idx` (`comuna_id` ASC),
+  CONSTRAINT `fk_direccion_comuna1`
+    FOREIGN KEY (`comuna_id`)
+    REFERENCES `intec`.`comuna` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`bodega`
+-- Table `intec`.`bodega`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`bodega` ;
+DROP TABLE IF EXISTS `intec`.`bodega` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`bodega` (
+CREATE TABLE IF NOT EXISTS `intec`.`bodega` (
   `idbodega` INT NOT NULL AUTO_INCREMENT,
   `bodega` VARCHAR(45) NOT NULL,
   `direccion_id` INT NOT NULL,
-  PRIMARY KEY (`idbodega`, `direccion_id`),
+  PRIMARY KEY (`idbodega`),
   INDEX `fk_bodega_direccion1_idx` (`direccion_id` ASC),
   CONSTRAINT `fk_bodega_direccion1`
     FOREIGN KEY (`direccion_id`)
-    REFERENCES `intech`.`direccion` (`id`)
+    REFERENCES `intec`.`direccion` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`posicion`
+-- Table `intec`.`posicion`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`posicion` ;
+DROP TABLE IF EXISTS `intec`.`posicion` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`posicion` (
+CREATE TABLE IF NOT EXISTS `intec`.`posicion` (
   `idposicion` INT NOT NULL AUTO_INCREMENT,
   `codigo_posicion` VARCHAR(45) NOT NULL,
   `codigo_barra` LONGTEXT NOT NULL,
@@ -210,59 +229,40 @@ CREATE TABLE IF NOT EXISTS `intech`.`posicion` (
   `modifiedAt` DATE NULL,
   `delete` TINYINT NULL,
   `deleteAt` DATE NULL,
-  PRIMARY KEY (`idposicion`, `bodega_idbodega`),
+  PRIMARY KEY (`idposicion`),
   INDEX `fk_posicion_bodega1_idx` (`bodega_idbodega` ASC),
   CONSTRAINT `fk_posicion_bodega1`
     FOREIGN KEY (`bodega_idbodega`)
-    REFERENCES `intech`.`bodega` (`idbodega`)
+    REFERENCES `intec`.`bodega` (`idbodega`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`comuna`
+-- Table `intec`.`localidad`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`comuna` ;
+DROP TABLE IF EXISTS `intec`.`localidad` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`comuna` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `comuna` VARCHAR(45) NOT NULL,
-  `region_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `region_id`),
-  INDEX `fk_comuna_region1_idx` (`region_id` ASC),
-  CONSTRAINT `fk_comuna_region1`
-    FOREIGN KEY (`region_id`)
-    REFERENCES `intech`.`region` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `intech`.`localidad`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`localidad` ;
-
-CREATE TABLE IF NOT EXISTS `intech`.`localidad` (
+CREATE TABLE IF NOT EXISTS `intec`.`localidad` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `localidad` VARCHAR(45) NOT NULL,
   `comuna_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `comuna_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_localidad_comuna_idx` (`comuna_id` ASC),
   CONSTRAINT `fk_localidad_comuna`
     FOREIGN KEY (`comuna_id`)
-    REFERENCES `intech`.`comuna` (`id`)
+    REFERENCES `intec`.`comuna` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`inventario`
+-- Table `intec`.`inventario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`inventario` ;
+DROP TABLE IF EXISTS `intec`.`inventario` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`inventario` (
+CREATE TABLE IF NOT EXISTS `intec`.`inventario` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `producto_id` INT NOT NULL,
   `cantidad` INT NOT NULL,
@@ -272,126 +272,168 @@ CREATE TABLE IF NOT EXISTS `intech`.`inventario` (
   INDEX `fk_inventario_producto1_idx` (`producto_id` ASC),
   CONSTRAINT `fk_inventario_producto1`
     FOREIGN KEY (`producto_id`)
-    REFERENCES `intech`.`producto` (`id`)
+    REFERENCES `intec`.`producto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`recepcion`
+-- Table `intec`.`proveedor`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`recepcion` ;
+DROP TABLE IF EXISTS `intec`.`proveedor` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`recepcion` (
+CREATE TABLE IF NOT EXISTS `intec`.`proveedor` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre_fantasia` VARCHAR(45) NOT NULL,
+  `razon_social` VARCHAR(255) NULL,
+  `datos_facturacion` VARCHAR(255) NULL,
+  `contacto` VARCHAR(45) NULL,
+  `datos_contacto` VARCHAR(255) NULL,
+  `proveedorcol` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`recepcion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`recepcion` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`recepcion` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `createAt` DATE NOT NULL,
   `modifiedAt` DATE NULL,
-  PRIMARY KEY (`id`));
+  `proveedor_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `proveedor_id`),
+  INDEX `fk_recepcion_proveedor1_idx` (`proveedor_id` ASC),
+  CONSTRAINT `fk_recepcion_proveedor1`
+    FOREIGN KEY (`proveedor_id`)
+    REFERENCES `intec`.`proveedor` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`lugar`
+-- Table `intec`.`lugar`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`lugar` ;
+DROP TABLE IF EXISTS `intec`.`lugar` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`lugar` (
+CREATE TABLE IF NOT EXISTS `intec`.`lugar` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `lugar` VARCHAR(45) NOT NULL,
   `createAt` DATE NOT NULL,
   `direccion_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `direccion_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_lugar_direccion1_idx` (`direccion_id` ASC),
   CONSTRAINT `fk_lugar_direccion1`
     FOREIGN KEY (`direccion_id`)
-    REFERENCES `intech`.`direccion` (`id`)
+    REFERENCES `intec`.`direccion` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`estado`
+-- Table `intec`.`gastos`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`estado` ;
+DROP TABLE IF EXISTS `intec`.`gastos` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`estado` (
+CREATE TABLE IF NOT EXISTS `intec`.`gastos` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `estado` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`));
+  `gasto` VARCHAR(255) NULL,
+  `monto` VARCHAR(45) NULL,
+  `proveedor_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_gastos_proveedor1_idx` (`proveedor_id` ASC),
+  CONSTRAINT `fk_gastos_proveedor1`
+    FOREIGN KEY (`proveedor_id`)
+    REFERENCES `intec`.`proveedor` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`gastos`
+-- Table `intec`.`arriendos`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`gastos` ;
+DROP TABLE IF EXISTS `intec`.`arriendos` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`gastos` (
+CREATE TABLE IF NOT EXISTS `intec`.`arriendos` (
+  `idarriendos` INT NOT NULL AUTO_INCREMENT,
+  `item` VARCHAR(255) NULL,
+  `costo` VARCHAR(45) NULL,
+  `proveedor_id` INT NOT NULL,
+  PRIMARY KEY (`idarriendos`, `proveedor_id`),
+  INDEX `fk_arriendos_proveedor1_idx` (`proveedor_id` ASC),
+  CONSTRAINT `fk_arriendos_proveedor1`
+    FOREIGN KEY (`proveedor_id`)
+    REFERENCES `intec`.`proveedor` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`cliente`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`cliente` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`cliente` (
   `id` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`ingresos`
+-- Table `intec`.`proyecto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`ingresos` ;
+DROP TABLE IF EXISTS `intec`.`proyecto` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`ingresos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `intech`.`proyecto`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`proyecto` ;
-
-CREATE TABLE IF NOT EXISTS `intech`.`proyecto` (
+CREATE TABLE IF NOT EXISTS `intec`.`proyecto` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre_proyecto` VARCHAR(100) NOT NULL,
   `lugar_id` INT NOT NULL,
   `fecha_inicio` DATE NOT NULL,
   `fecha_termino` DATE NOT NULL,
-  `estado_id` INT NOT NULL,
   `createAt` DATE NOT NULL,
   `modifiedAt` DATE NULL,
   `delete` TINYINT NULL,
   `deleteAt` DATE NULL,
-  `ingresos_id` INT NOT NULL,
-  `gastos_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `lugar_id`, `estado_id`, `ingresos_id`, `gastos_id`),
+  `gastos_id` INT NULL,
+  `arriendos_idarriendos` INT NULL,
+  `cliente_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `lugar_id`, `cliente_id`),
   INDEX `fk_proyecto_lugar1_idx` (`lugar_id` ASC),
-  INDEX `fk_proyecto_estado1_idx` (`estado_id` ASC),
   INDEX `fk_proyecto_gastos1_idx` (`gastos_id` ASC),
-  INDEX `fk_proyecto_ingresos1_idx` (`ingresos_id` ASC),
+  INDEX `fk_proyecto_arriendos1_idx` (`arriendos_idarriendos` ASC),
+  INDEX `fk_proyecto_cliente1_idx` (`cliente_id` ASC),
   CONSTRAINT `fk_proyecto_lugar1`
     FOREIGN KEY (`lugar_id`)
-    REFERENCES `intech`.`lugar` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_proyecto_estado1`
-    FOREIGN KEY (`estado_id`)
-    REFERENCES `intech`.`estado` (`id`)
+    REFERENCES `intec`.`lugar` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyecto_gastos1`
     FOREIGN KEY (`gastos_id`)
-    REFERENCES `intech`.`gastos` (`id`)
+    REFERENCES `intec`.`gastos` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_proyecto_ingresos1`
-    FOREIGN KEY (`ingresos_id`)
-    REFERENCES `intech`.`ingresos` (`id`)
+  CONSTRAINT `fk_proyecto_arriendos1`
+    FOREIGN KEY (`arriendos_idarriendos`)
+    REFERENCES `intec`.`arriendos` (`idarriendos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_proyecto_cliente1`
+    FOREIGN KEY (`cliente_id`)
+    REFERENCES `intec`.`cliente` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`modelo`
+-- Table `intec`.`modelo`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`modelo` ;
+DROP TABLE IF EXISTS `intec`.`modelo` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`modelo` (
+CREATE TABLE IF NOT EXISTS `intec`.`modelo` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `modelo` VARCHAR(45) NULL,
   `createAt` DATE NOT NULL,
@@ -403,91 +445,88 @@ CREATE TABLE IF NOT EXISTS `intech`.`modelo` (
   INDEX `fk_modelo_marca1_idx` (`marca_id` ASC),
   CONSTRAINT `fk_modelo_marca1`
     FOREIGN KEY (`marca_id`)
-    REFERENCES `intech`.`marca` (`id`)
+    REFERENCES `intec`.`marca` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`proyecto_has_producto`
+-- Table `intec`.`proyecto_has_producto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`proyecto_has_producto` ;
+DROP TABLE IF EXISTS `intec`.`proyecto_has_producto` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`proyecto_has_producto` (
+CREATE TABLE IF NOT EXISTS `intec`.`proyecto_has_producto` (
   `proyecto_id` INT NOT NULL,
   `producto_id` INT NOT NULL,
   `cantidad` INT NOT NULL,
   `arriendo` INT NULL,
-  PRIMARY KEY (`producto_id`, `proyecto_id`),
   INDEX `fk_proyecto_has_producto_producto1_idx` (`producto_id` ASC),
   INDEX `fk_proyecto_has_producto_proyecto1_idx` (`proyecto_id` ASC),
   CONSTRAINT `fk_proyecto_has_producto_proyecto1`
     FOREIGN KEY (`proyecto_id`)
-    REFERENCES `intech`.`proyecto` (`id`)
+    REFERENCES `intec`.`proyecto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_proyecto_has_producto_producto1`
     FOREIGN KEY (`producto_id`)
-    REFERENCES `intech`.`producto` (`id`)
+    REFERENCES `intec`.`producto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`producto_has_posicion`
+-- Table `intec`.`producto_has_posicion`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`producto_has_posicion` ;
+DROP TABLE IF EXISTS `intec`.`producto_has_posicion` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`producto_has_posicion` (
+CREATE TABLE IF NOT EXISTS `intec`.`producto_has_posicion` (
   `producto_id` INT NOT NULL,
   `posicion_idposicion` INT NOT NULL,
   `cantidad` INT NOT NULL,
-  PRIMARY KEY (`producto_id`, `posicion_idposicion`),
   INDEX `fk_producto_has_posicion_posicion1_idx` (`posicion_idposicion` ASC),
   INDEX `fk_producto_has_posicion_producto1_idx` (`producto_id` ASC),
   CONSTRAINT `fk_producto_has_posicion_producto1`
     FOREIGN KEY (`producto_id`)
-    REFERENCES `intech`.`producto` (`id`)
+    REFERENCES `intec`.`producto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_producto_has_posicion_posicion1`
     FOREIGN KEY (`posicion_idposicion`)
-    REFERENCES `intech`.`posicion` (`idposicion`)
+    REFERENCES `intec`.`posicion` (`idposicion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`recepcion_has_producto`
+-- Table `intec`.`recepcion_has_producto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`recepcion_has_producto` ;
+DROP TABLE IF EXISTS `intec`.`recepcion_has_producto` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`recepcion_has_producto` (
+CREATE TABLE IF NOT EXISTS `intec`.`recepcion_has_producto` (
   `recepcion_id` INT NOT NULL,
   `producto_id` INT NOT NULL,
   `cantidad` INT NOT NULL,
-  PRIMARY KEY (`recepcion_id`, `producto_id`),
   INDEX `fk_recepcion_has_producto_producto1_idx` (`producto_id` ASC),
   INDEX `fk_recepcion_has_producto_recepcion1_idx` (`recepcion_id` ASC),
   CONSTRAINT `fk_recepcion_has_producto_recepcion1`
     FOREIGN KEY (`recepcion_id`)
-    REFERENCES `intech`.`recepcion` (`id`)
+    REFERENCES `intec`.`recepcion` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_recepcion_has_producto_producto1`
     FOREIGN KEY (`producto_id`)
-    REFERENCES `intech`.`producto` (`id`)
+    REFERENCES `intec`.`producto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`especialidad`
+-- Table `intec`.`especialidad`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`especialidad` ;
+DROP TABLE IF EXISTS `intec`.`especialidad` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`especialidad` (
+CREATE TABLE IF NOT EXISTS `intec`.`especialidad` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `especialidad` VARCHAR(45) NOT NULL,
   `createAt` DATE NOT NULL,
@@ -498,11 +537,11 @@ CREATE TABLE IF NOT EXISTS `intech`.`especialidad` (
 
 
 -- -----------------------------------------------------
--- Table `intech`.`rol`
+-- Table `intec`.`rol`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`rol` ;
+DROP TABLE IF EXISTS `intec`.`rol` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`rol` (
+CREATE TABLE IF NOT EXISTS `intec`.`rol` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `rol` VARCHAR(45) NOT NULL,
   `createAt` DATE NOT NULL,
@@ -513,31 +552,31 @@ CREATE TABLE IF NOT EXISTS `intech`.`rol` (
 
 
 -- -----------------------------------------------------
--- Table `intech`.`usuario`
+-- Table `intec`.`usuario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`usuario` ;
+DROP TABLE IF EXISTS `intec`.`usuario` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`usuario` (
+CREATE TABLE IF NOT EXISTS `intec`.`usuario` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `createAt` DATE NOT NULL,
   `rol_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `rol_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_usuario_rol1_idx` (`rol_id` ASC),
   CONSTRAINT `fk_usuario_rol1`
     FOREIGN KEY (`rol_id`)
-    REFERENCES `intech`.`rol` (`id`)
+    REFERENCES `intec`.`rol` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`cargo`
+-- Table `intec`.`cargo`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`cargo` ;
+DROP TABLE IF EXISTS `intec`.`cargo` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`cargo` (
+CREATE TABLE IF NOT EXISTS `intec`.`cargo` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `cargo` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
@@ -545,11 +584,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`tipo_contrato`
+-- Table `intec`.`tipo_contrato`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`tipo_contrato` ;
+DROP TABLE IF EXISTS `intec`.`tipo_contrato` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`tipo_contrato` (
+CREATE TABLE IF NOT EXISTS `intec`.`tipo_contrato` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `contrato` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -557,11 +596,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`personal`
+-- Table `intec`.`personal`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`personal` ;
+DROP TABLE IF EXISTS `intec`.`personal` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`personal` (
+CREATE TABLE IF NOT EXISTS `intec`.`personal` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `apellido` VARCHAR(45) NOT NULL,
@@ -569,44 +608,44 @@ CREATE TABLE IF NOT EXISTS `intech`.`personal` (
   `usuario_id` INT NULL,
   `cargo_id` INT NOT NULL,
   `especialidad_id` INT NOT NULL,
+  `tipo_contrato_id` INT NOT NULL,
   `createAt` DATE NOT NULL,
   `modifiedAt` DATE NULL,
   `delete` TINYINT NULL,
   `deleteAt` DATE NULL,
-  `tipo_contrato_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `tipo_contrato_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_personal_especialidad1_idx` (`especialidad_id` ASC),
   INDEX `fk_personal_usuario1_idx` (`usuario_id` ASC),
   INDEX `fk_personal_cargo1_idx` (`cargo_id` ASC),
   INDEX `fk_personal_tipo_contrato1_idx` (`tipo_contrato_id` ASC),
   CONSTRAINT `fk_personal_especialidad1`
     FOREIGN KEY (`especialidad_id`)
-    REFERENCES `intech`.`especialidad` (`id`)
+    REFERENCES `intec`.`especialidad` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_personal_usuario1`
     FOREIGN KEY (`usuario_id`)
-    REFERENCES `intech`.`usuario` (`id`)
+    REFERENCES `intec`.`usuario` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_personal_cargo1`
     FOREIGN KEY (`cargo_id`)
-    REFERENCES `intech`.`cargo` (`id`)
+    REFERENCES `intec`.`cargo` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_personal_tipo_contrato1`
     FOREIGN KEY (`tipo_contrato_id`)
-    REFERENCES `intech`.`tipo_contrato` (`id`)
+    REFERENCES `intec`.`tipo_contrato` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`personal_has_proyecto`
+-- Table `intec`.`personal_has_proyecto`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`personal_has_proyecto` ;
+DROP TABLE IF EXISTS `intec`.`personal_has_proyecto` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`personal_has_proyecto` (
+CREATE TABLE IF NOT EXISTS `intec`.`personal_has_proyecto` (
   `personal_id` INT NOT NULL,
   `proyecto_id` INT NOT NULL,
   `costo` INT NULL,
@@ -615,47 +654,122 @@ CREATE TABLE IF NOT EXISTS `intech`.`personal_has_proyecto` (
   INDEX `fk_personal_has_proyecto_personal1_idx` (`personal_id` ASC),
   CONSTRAINT `fk_personal_has_proyecto_personal1`
     FOREIGN KEY (`personal_id`)
-    REFERENCES `intech`.`personal` (`id`)
+    REFERENCES `intec`.`personal` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_personal_has_proyecto_proyecto1`
     FOREIGN KEY (`proyecto_id`)
-    REFERENCES `intech`.`proyecto` (`id`)
+    REFERENCES `intec`.`proyecto` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 -- -----------------------------------------------------
--- Table `intech`.`vehiculo`
+-- Table `intec`.`estado`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`vehiculo` ;
+DROP TABLE IF EXISTS `intec`.`estado` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`vehiculo` (
+CREATE TABLE IF NOT EXISTS `intec`.`estado` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`))
+  `estado` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`));
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`vehiculo`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`vehiculo` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`vehiculo` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `patente` VARCHAR(45) NULL,
+  `personal_id` INT NOT NULL,
+  PRIMARY KEY (`id`, `personal_id`),
+  INDEX `fk_vehiculo_personal1_idx` (`personal_id` ASC),
+  CONSTRAINT `fk_vehiculo_personal1`
+    FOREIGN KEY (`personal_id`)
+    REFERENCES `intec`.`personal` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`proveedor`
+-- Table `intec`.`ingresos`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`proveedor` ;
+DROP TABLE IF EXISTS `intec`.`ingresos` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`proveedor` (
+CREATE TABLE IF NOT EXISTS `intec`.`ingresos` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`))
+  `ingreso` VARCHAR(255) NULL,
+  `monto` VARCHAR(45) NULL,
+  `proyecto_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_ingresos_proyecto1_idx` (`proyecto_id` ASC),
+  CONSTRAINT `fk_ingresos_proyecto1`
+    FOREIGN KEY (`proyecto_id`)
+    REFERENCES `intec`.`proyecto` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `intech`.`cliente`
+-- Table `intec`.`empresa`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `intech`.`cliente` ;
+DROP TABLE IF EXISTS `intec`.`empresa` ;
 
-CREATE TABLE IF NOT EXISTS `intech`.`cliente` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`))
+CREATE TABLE IF NOT EXISTS `intec`.`empresa` (
+  `idempresa` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`idempresa`))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`proyecto_has_vehiculo`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`proyecto_has_vehiculo` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`proyecto_has_vehiculo` (
+  `proyecto_id` INT NOT NULL,
+  `vehiculo_id` INT NOT NULL,
+  PRIMARY KEY (`proyecto_id`, `vehiculo_id`),
+  INDEX `fk_proyecto_has_vehiculo_vehiculo1_idx` (`vehiculo_id` ASC),
+  INDEX `fk_proyecto_has_vehiculo_proyecto1_idx` (`proyecto_id` ASC),
+  CONSTRAINT `fk_proyecto_has_vehiculo_proyecto1`
+    FOREIGN KEY (`proyecto_id`)
+    REFERENCES `intec`.`proyecto` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_proyecto_has_vehiculo_vehiculo1`
+    FOREIGN KEY (`vehiculo_id`)
+    REFERENCES `intec`.`vehiculo` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+-- -----------------------------------------------------
+-- Table `intec`.`proyecto_has_estado`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `intec`.`proyecto_has_estado` ;
+
+CREATE TABLE IF NOT EXISTS `intec`.`proyecto_has_estado` (
+  `proyecto_id` INT NOT NULL,
+  `estado_id` INT NOT NULL,
+  `fecha` DATE NOT NULL,
+  PRIMARY KEY (`proyecto_id`, `estado_id`),
+  INDEX `fk_proyecto_has_estado_estado1_idx` (`estado_id` ASC),
+  INDEX `fk_proyecto_has_estado_proyecto1_idx` (`proyecto_id` ASC),
+  CONSTRAINT `fk_proyecto_has_estado_proyecto1`
+    FOREIGN KEY (`proyecto_id`)
+    REFERENCES `intec`.`proyecto` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_proyecto_has_estado_estado1`
+    FOREIGN KEY (`estado_id`)
+    REFERENCES `intec`.`estado` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
