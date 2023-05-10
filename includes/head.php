@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="./assets/css/main/app.css" />
     <link rel="stylesheet" href="./assets/css/main/app-dark.css" />
+    <link rel="stylesheet" href="./assets/css/main/intechStyle.css">
     
     <!-- FontAwesome -->
     <link 
@@ -25,7 +26,7 @@
       href="./assets/images/logo/intech_logo.png"
       type="image/png"
     />
-
+    
     <link rel="stylesheet" href="./assets/css/shared/iconly.css" />
 </head>
 

@@ -23,17 +23,32 @@ $arregloPersonal = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9,10],[2,3,4,5,6,7,8,
 
         <div class="page-header">
             <h3>Personal</h3>
-            <div class="col-8 col-lg-3 col-sm-4">
-                <div class="card">
-                    <button
-                        type="button"
-                        class="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#xlarge"
-                    >
-                        Agregar personal
-                    </button>
-                    <button class="btn mt-2" onclick="ExportToExcel('xlsx')"><h4>Exportar a Excel</h4></button>
+            <div class="row">
+                <div class="col-8 col-lg-3 col-sm-4">
+                    <div class="card">
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#xlarge"
+                        >
+                            Agregar personal
+                        </button>
+                        <button class="btn mt-2" onclick="ExportToExcel('xlsx')"><h4>Exportar a Excel</h4></button>
+                    </div>
+                </div>
+                <div class="col-8 col-lg-3 col-sm-4">
+                    <div class="card">
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#xlarge"
+                        >
+                            Agregar personal masivo
+                        </button>
+                        <input class="form-control form-control-sm" id="excel_input" type="file" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -232,68 +247,262 @@ $arregloPersonal = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9,10],[2,3,4,5,6,7,8,
             
 
         </div>
-        
+
+        <table id="excelTable">
+            <thead>
+
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        <button class="btn btn-success" id="saveExcelData">Enviar</button>
         <?php require_once('./includes/footer.php') ?>
 
       </div>
     </div>
 
     <?php require_once('./includes/footerScriptsJs.php') ?>
+
+    <!-- xlsx Reader -->
+    <script src="js/valuesValidator/validator.js"></script>
+    <script src="js/xlsxReader.js"></script>
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+
     
 
-    <script>
-      $(document).ready(function() {
-          $('#example').DataTable( {
-              fixedHeader: true
-          } );
-      } );
+<script>
+    
+$(document).ready(function() {
 
-      const arregloPersonal = <?php echo json_encode($arregloPersonal); ?>;
-      
+    $('#example').DataTable( {
+        fixedHeader: true
+    })
 
-      function ExportToExcel(type, fn, dl) {
+});
 
-        // var elt = document.getElementById('example');
-        // console.log(elt);
+const dataArrayIndex=['nombres','apellidos','rut','correo','telefono','especialidad','contrato']
+const dataArray={
+    'xlsxData' : 
+    [{'name':'nombres',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false }
+    ,
+    {'name':'apellidos',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
 
-        var elt = `<table class="table" id="example" class="display" style="width:100%">
-                <thead>
-                    <tr>
-                        <th style="text-align: center;">Nombre</th>
-                        <th style="text-align: center;">Apellido</th>
-                        <th style="text-align: center;">Rut</th>
-                        <th style="text-align: center;">Email</th>
-                        <th style="text-align: center;">Telefono</th>
-                        <th style="text-align: center;">Cargo</th>
-                        <th style="text-align: center;">Especialidad</th>
-                        <th style="text-align: center;">Tipo Contrato</th>
-                        <th style="text-align: center;">Disponibilidad</th>
-                        <th style="text-align: center;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>`
+    {'name':'rut',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
 
-        arregloPersonal.map((data) => {
-            // console.log(data);
-            elt = elt + '<tr>'
-            data.forEach(dato => {
-                elt = elt + `<td align="center">${dato}</td>`
-            });
-            elt = elt + '</tr>'
+    {'name':'correo',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'telefono',
+    'type': 'int',
+    'minlength': 3,
+    'maxlength' : 15,
+    'notNull' : false },
+
+    {'name':'especialidad',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'contrato',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false }]
+}
+
+
+//Funcion que verifica la extension del archivo ingresado
+function GetFileExtension(){
+    fileName = $('#excel_input').val();
+    extension = fileName.split('.').pop();
+    return extension;
+}
+
+
+
+$('#excel_input').on('change',async function(){
+
+    const extension = GetFileExtension()
+
+    if(extension == "xlsx"){
+
+        const tableContent = await xlsxReadandWrite(dataArray);
+        let tableHead= $('#excelTable>thead')
+        let tableBody = $('#excelTable>tbody')
+        
+        //Limpiar datos de Excel Previo
+        tableBody.empty()
+
+        tableHead.append(tableContent[0])
+        tableBody.append(tableContent[1])
+
+
+    }else(
+        Swal.fire({
+            icon: 'error',
+            title: 'Ups',
+            text: 'Debes cargar un Excel',
         })
+    )
+})
 
-        elt = elt + `</tbody>
-                    </table>`;
-        
-        console.log(elt);
-        
-        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
-        return dl ?
-            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64'}):
-            XLSX.writeFile(wb, fn || (`example.` + (type || 'xlsx')));
+$('#excelTable>tbody').on('blur', 'td', function() {
+
+    let value = $(this).text()
+
+    //obtencion de las propiedades del TD
+    let tdListClass = $(this).attr("class").split(/\s+/);
+    let tdClass = tdListClass[0]
+    let tdPropertiesIndex = dataArrayIndex.indexOf(tdClass)
+    let tdProperties = dataArray.xlsxData[tdPropertiesIndex]
+
+    // SETEO DE PROPIEDADES
+    let type = tdProperties.type
+    let minlength = tdProperties.minlength
+    let maxlength = tdProperties.maxlength
+    let notNull = tdProperties.notnull
+
+    //OBTENCION DE PROPIEDADES DE VALOR DE CELDA
+
+    let tdType = isNumeric(value)
+    let tdMinlength = minLength(value,minlength)
+    let tdMaxlength = maxLength(value,maxlength)
+    let tdNull = isNull(value)
+
+    let errorCheck = false
+    let tdTitle = ""
+    //atributos return a td
+    if(!notNull  && tdNull){
+        errorCheck = false
+        tdTitle = "Ingrese un valor"
+    }else if(type === "string" && tdType){
+        errorCheck = true
+    }else if(type === "int" && !tdType){
+        errorCheck = false
+        tdTitle = "Ingrese un número"
+    }else{
+        errorCheck = true
+    }
+    if(!tdMinlength){
+        tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
+        errorCheck = false
+    }
+    if(!tdMaxlength){
+        tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
+        errorCheck = false
+    }
+    console.log("errorCheck",errorCheck);
+    if(!errorCheck){
+        $(this).prop('title',tdTitle)
+        $(this).addClass('err')
+    }else{
+        $(this).prop('title',"")
+        $(this).removeClass('err')
+    }
+})
+
+$('#saveExcelData').on('click',function(){
+    let counterErr = 0;
+
+    $('#excelTable>tbody td').each(function() {
+
+        var cellText = $(this).hasClass('err')  
+        if(cellText){
+            counterErr ++ 
         }
 
-    </script>
+    });
+
+    if(counterErr == 0){
+
+        let arrTd = []
+        let arrayRequest = []
+
+        $('#excelTable>tbody tr').each(function(){
+
+            arrTd = []
+            let td = $(this).find('td')
+
+            td.each(function(){
+                let tdTextValue= $(this).text()
+                arrTd.push(tdTextValue)
+            })
+
+            arrayRequest.push(arrTd)
+
+           
+        });
+        console.log(arrayRequest);
+
+    }else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Ups',
+            text: 'Debe corregir los datos mal ingresado para continuar'
+        })
+    }
+})
+
+
+
+
+//   const arregloPersonal = <?// echo json_encode($arregloPersonal); ?>;
+//   function ExportToExcel(type, fn, dl) {
+//     var elt = document.getElementById('example');
+//     // console.log(elt);
+//     var elt = `<table class="table" id="example" class="display" style="width:100%">
+//             <thead>
+//                 <tr>
+//                     <th style="text-align: center;">Nombre</th>
+//                     <th style="text-align: center;">Apellido</th>
+//                     <th style="text-align: center;">Rut</th>
+//                     <th style="text-align: center;">Email</th>
+//                     <th style="text-align: center;">Telefono</th>
+//                     <th style="text-align: center;">Cargo</th>
+//                     <th style="text-align: center;">Especialidad</th>
+//                     <th style="text-align: center;">Tipo Contrato</th>
+//                     <th style="text-align: center;">Disponibilidad</th>
+//                     <th style="text-align: center;">Acciones</th>
+//                 </tr>
+//             </thead>
+//             <tbody>`
+//     arregloPersonal.map((data) => {
+//         // console.log(data);
+//         elt = elt + '<tr>'
+//         data.forEach(dato => {
+//             elt = elt + `<td align="center">${dato}</td>`
+//         });
+//         elt = elt + '</tr>'
+//     })
+//     elt = elt + `</tbody>
+//                 </table>`;
+//     console.log(elt);
+//     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+//     return dl ?
+//         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64'}):
+//         XLSX.writeFile(wb, fn || (`example.` + (type || 'xlsx')));
+//}
+
+</script>
 
   </body>
+
+
 </html>
