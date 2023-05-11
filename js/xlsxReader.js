@@ -105,7 +105,6 @@ async function xlsxReadandWrite(arrayHead){
         ESTEN FUERA DEL arrayCount*/
 
         rows.rows.forEach((row, index) => {
-
             let newRow =[]
 
             row.forEach((rowElement,index) => {
@@ -113,10 +112,8 @@ async function xlsxReadandWrite(arrayHead){
                     newRow.push(rowElement)
                 }
             });
-
             xlsxRow.push(newRow)
         });
-
 
         //ARRAY IF IS NULL
         arrayHead.xlsxData.forEach((nulloption, index) => {
@@ -147,13 +144,12 @@ async function xlsxReadandWrite(arrayHead){
         arrayHead.xlsxData.forEach((arh,index) => {
 
             let name = arh.name;
-            
             if(name !== xlsxHead[index]){
                 counterErrHead ++
             }
 
         })
-
+        console.log("ERRORES===>>>",counterErrHead);
         if(counterErrHead == 0){
 
             let cell = ""
@@ -171,14 +167,19 @@ async function xlsxReadandWrite(arrayHead){
             });
             tHead += `</tr>`    
 
-            for(i = 0 ; i < arrayCount ; i++){
+            console.log("ARRAYCOUNT===>",arrayCount);
+            console.log("xlsxRow",xlsxRow);
+            let rowCount  = xlsxRow.length;
+            for(i = 0 ; i < rowCount ; i++){
                 td += `<tr>`
                 cell = xlsxRow[i]
-                ifNull = xlsxNull[i]
-                minlength = xslxMinLength[i]
-                maxlength = xlsxMaxLength[i]
+
 
                 for (j = 0 ; j < arrayCount ; j ++){
+
+                    ifNull = xlsxNull[i]
+                    minlength = xslxMinLength[i]
+                    maxlength = xlsxMaxLength[i]
 
                     let tdName = xlsxHead[j]
                     let tdType = xslxType[j]
