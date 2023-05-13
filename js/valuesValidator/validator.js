@@ -11,8 +11,9 @@ function isNull(value){
     }else{
         return false
     }
-
 }
+
+
 
 function minLength(value,min){
 

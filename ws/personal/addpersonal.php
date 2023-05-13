@@ -14,13 +14,6 @@
 
     foreach ($personalArr as $key => $value){
 
-        // "nombre" : value[0],
-        // "apellido" : value[1],
-        // "rut" : value[2],
-        // "Cargo" : value[3],
-        // "especialidad" : value[4],
-        // "contrato" : value[5],
-
         $nombre = $value ->nombre;
         $apellido = $value ->apellido;
         $rut = $value ->rut;
@@ -42,11 +35,11 @@
         $idContrato = $value->id;
 
         $query = 'INSERT INTO intec.personal
-                (nombre, apellido,cargo_id, especialidad_id, tipo_contrato_id, createAt, empresa_id)
-                VALUES("'.$nombre.'","'.$apellido.'",'.$idCargo.','.$idEspecialidad.','.$idContrato.','.$today.',1)';
+                (nombre, apellido,rut,cargo_id, especialidad_id, tipo_contrato_id, createAt,IsDelete, empresa_id)
+                VALUES("'.$nombre.'","'.$apellido.'","'.$rut.'",'.$idCargo.','.$idEspecialidad.','.$idContrato.','.$today.',0,1)';
 
         echo $idCargo;
-
+        
         if($conn->mysqli->query($query)){
 
         }else{

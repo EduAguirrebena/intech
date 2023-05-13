@@ -4,37 +4,61 @@ $conn = new bd();
 $conn->conectar();
 $arregloPersonal = [];
 
-$queryPersonal = 'SELECT p.nombre, p.apellido ,e.especialidad ,c.cargo, tc.contrato  from personal p
+$queryPersonal = 'SELECT p.id , p.nombre, p.apellido ,e.especialidad ,c.cargo, tc.contrato,p.rut  from personal p
                     INNER JOIN especialidad e on e.id = p.especialidad_id 
                     INNER JOIN cargo c on c.id = p.cargo_id 
                     INNER JOIN tipo_contrato tc on tc.id  = p.tipo_contrato_id 
                     INNER JOIN empresa em on em.id =p.empresa_id 
-                    where empresa_id = 1';
+                    where empresa_id = 1 AND p.IsDelete = 0';
 
+$queryCargos = 'select cargo from cargo c';
+$queryEsepcialidad = 'SELECT especialidad from especialidad e';
+$queryContrato = 'select contrato FROM tipo_contrato tc';
+
+//BUILD DATA PERSONAL
 $responseDbPersonal = $conn->mysqli->query($queryPersonal);
 
 while($dataPersonal = $responseDbPersonal->fetch_object()){
     $arregloPersonal[] = $dataPersonal;
 }
 
+//BUILD DATA CARGOS
+$responseDbCargos = $conn->mysqli->query($queryCargos);
+
+while($dataCargos = $responseDbCargos->fetch_object()){
+    $cargos[] = $dataCargos;
+}
+
+//BUILD DATA ESPECIALIDAD
+$responseDbEspecialidad = $conn->mysqli->query($queryEsepcialidad);
+
+while($dataEspecialidad = $responseDbEspecialidad->fetch_object()){
+    $especialidades[] = $dataEspecialidad;
+}
+
+//BUILD TIPO CONTRATO DATA
+$responseDbTipoContrato = $conn->mysqli->query($queryContrato);
+
+while($dataContratos = $responseDbTipoContrato->fetch_object()){
+    $contratos[] = $dataContratos;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
   
 <?php 
-
     require_once('./includes/head.php');
     $active = 'personal';
-    //$arregloPersonal = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9,10],[2,3,4,5,6,7,8,9,10,11],[3,4,5,6,7,8,9,10,11,12],[4,5,6,7,8,9,10,11,12,13],[5,6,7,8,9,10,11,12,13,14],[6,7,8,9,10,11,12,13,14,15],[7,8,9,10,11,12,13,14,15,16],[8,9,10,11,12,13,14,15,16,17],[9,10,11,12,13,14,15,16,17,18],[10,11,12,13,14,15,16,17,18,19],[11,12,13,14,15,16,17,18,19,20],[12,13,14,15,16,17,18,19,20,21],[13,14,15,16,17,18,19,20,21,22],[14,15,16,17,18,19,20,21,22,23],[15,16,17,18,19,20,21,22,23,24],[16,17,18,19,20,21,22,23,24,25],[17,18,19,20,21,22,23,24,25,26],[18,19,20,21,22,23,24,25,26,27],[19,20,21,22,23,24,25,26,27,28],[20,21,22,23,24,25,26,27,28,29],[21,22,23,24,25,26,27,28,29,30],[22,23,24,25,26,27,28,29,30,31]];
-
 ?>
 
   <body>
     <script src="./assets/js/initTheme.js"></script>
+
+   
     <div id="app">
 
-        <?php require_once('./includes/sidebar.php') ?>
+        <?php require_once('./includes/sidebar.php')?>
 
       <div id="main">
         <header class="mb-3">
@@ -106,89 +130,104 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
                             <table style="width: 100%;">
                                 <tr>
                                     <td>
-                                        <label>Nombres:</label>
+                                        <label for="nombres">Nombres:</label>
                                         <div class="form-group">
                                             <input
-                                            name="nombres"
-                                            type="text"
-                                            placeholder="Nombres"
-                                            class="form-control"
+                                                name="nombres"
+                                                id="nombres"
+                                                type="text"
+                                                placeholder="Nombres"
+                                                class="form-control"
                                             />
                                         </div>
                                     </td>
                                     <td>
-                                        <label>Apellidos:</label>
+                                        <label for="apellidos">Apellidos:</label>
                                         <div class="form-group">
                                             <input
-                                            name="apellidos"
-                                            type="text"
-                                            placeholder="Apellidos"
-                                            class="form-control"
+                                                name="apellidos"
+                                                id="apellidos"
+                                                type="text"
+                                                placeholder="Apellidos"
+                                                class="form-control"
                                             />
                                         </div>
                                     </td>
                                     <td>
-                                        <label>Rut:</label>
+                                        <label for="rut">Rut:</label>
                                         <div class="form-group">
                                             <input
-                                            name="rut"
-                                            type="text"
-                                            placeholder="rut"
-                                            class="form-control"
+                                                name="rut"
+                                                id="rut"
+                                                type="text"
+                                                placeholder="rut"
+                                                class="form-control"
                                         />
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
-                                        <label>Mail</label>
-                                        <div class="form-group">
-                                            <input
-                                            name="mail"
-                                            type="text"
-                                            placeholder="mail"
-                                            class="form-control"
-                                        />
-                                        </div>
-                                    </td>
                                     <td>
                                         <label>Telefono</label>
                                         <div class="form-group">
                                             <input
-                                            name="telefono"
-                                            type="text"
-                                            placeholder="56 9 1231 2345"
-                                            class="form-control"
+                                                name="telefono"
+                                                type="text"
+                                                placeholder="56 9 1231 2345"
+                                                class="form-control"
                                         />
                                         </div>
                                     </td>
                                     <td>
-                                        <label>Especialidad</label>
+                                        <label>Cargo:</label>
                                         <div class="form-group">
-                                            <select class="form-select">
-                                                <option>opcion 1</option>
-                                                <option>opcion 2</option>
-                                                <option>opcion 3</option>
+                                            <select name="cargo_select"
+                                            id="cargo_select" class="form-select">
+                                            <option value=""></option>
+                                            <?php
+                                                foreach ($cargos as $key => $value): 
+                                            ?>
+                                            <option value="<?=$value->cargo?>"><?=$value->cargo?></option>
+                                            <?php endforeach;?>
                                             </select>
                                         </div>
                                     </td>
+                                    
                                 </tr>
                                 <tr>
+                                    <td>
+                                        <label>Especialidad</label>
+                                        <div class="form-group">
+                                            <select name="especialidad_select"
+                                            id="especialidad_select" class="form-select">
+                                            <option value=""></option>
+                                            <?php
+                                                foreach ($especialidades as $key => $value): 
+                                            ?>
+                                            <option value="<?=$value->especialidad?>"><?=$value->especialidad?></option>
+                                            <?php endforeach;?>
+                                            </select>
+                                        </div>
+                                    </td>
                                     <td></td>
                                     <td>
                                         <label>Tipo de contrato</label>
                                         <div class="form-group">
-                                            <select class="form-select">
-                                                <option>opcion 1</option>
-                                                <option>opcion 2</option>
-                                                <option>opcion 3</option>
+                                            <select name="contrato_Select"
+                                                    id="contrato_Select" 
+                                                    class="form-select">
+                                            <option value=""></option>
+                                            <?php
+                                                foreach ($contratos as $key => $value): 
+                                            ?>
+                                            <option value="<?=$value->contrato?>"><?=$value->contrato?></option>
+                                            <?php endforeach;?>
                                             </select>
                                         </div>
                                     </td>
                                     <td></td>
                                 </tr>
                             </table>
-                            
                         </div>
                         <div class="modal-footer">
                             <button
@@ -223,12 +262,17 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
                                 <table class="table" id="example" class="display" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th style="text-align: center;">nombre</th>
-                                            <th style="text-align: center;">apellido</th>
-                                            <th style="text-align: center;">especialidad</th>
-                                            <th style="text-align: center;">cargo</th>
-                                            <th style="text-align: center;">contrato</th>
-
+                                            <th style="text-align: center; display:none" >id</th>
+                                            <th style="text-align: center;">Nombre</th>
+                                            <th style="text-align: center;">Apellido</th>
+                                            <th style="text-align: center;">Rut</th>
+                                            <th style="text-align: center;">Email</th>
+                                            <th style="text-align: center;">Telefono</th>
+                                            <th style="text-align: center;">Cargo</th>
+                                            <th style="text-align: center;">Especialidad</th>
+                                            <th style="text-align: center;">Tipo Contrato</th>
+                                            <th style="text-align: center;">Disponibilidad</th>
+                                            <th style="text-align: center;">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -237,11 +281,18 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
                                            
                                             foreach($arregloPersonal as $dato){
                                                 echo '<tr>';
-                                                echo '<td align="center">'.$dato->nombre.'</td>';
-                                                echo '<td align="center">'.$dato->apellido.'</td>';
-                                                echo '<td align="center">'.$dato->especialidad.'</td>';
-                                                echo '<td align="center">'.$dato->cargo.'</td>';
-                                                echo '<td align="center">'.$dato->contrato.'</td>';
+
+                                                    echo '<td class="id" align="center" style ="display:none">'.$dato->id.'</td>';
+                                                    echo '<td class="nombre" align="center">'.$dato->nombre.'</td>';
+                                                    echo '<td class="apellido" align="center">'.$dato->apellido.'</td>';
+                                                    echo '<td align="center">'.$dato->rut.'</td>';
+                                                    echo '<td align="center">Email</td>';
+                                                    echo '<td align="center">Telefono</td>';
+                                                    echo '<td align="center">'.$dato->cargo.'</td>';
+                                                    echo '<td align="center">'.$dato->especialidad.'</td>';
+                                                    echo '<td align="center">'.$dato->contrato.'</td>';
+                                                    echo '<td align="center"><input type="radio"></td>';
+                                                    echo '<td align="center"><i class="fa-solid fa-trash deletePersonal"></i><i style="left-margin:5px" class="fa-solid fa-pencil"></i></td>';
                                                 echo '</tr>';
                                             }
                                            
@@ -249,11 +300,17 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th style="text-align: center;">nombre</th>
-                                            <th style="text-align: center;">apellido</th>
-                                            <th style="text-align: center;">especialidad</th>
-                                            <th style="text-align: center;">cargo</th>
-                                            <th style="text-align: center;">contrato</th>
+                                            <th style="text-align: center; display:none" >id</th>
+                                            <th style="text-align: center;">Nombre</th>
+                                            <th style="text-align: center;">Apellido</th>
+                                            <th style="text-align: center;">Rut</th>
+                                            <th style="text-align: center;">Email</th>
+                                            <th style="text-align: center;">Telefono</th>
+                                            <th style="text-align: center;">Cargo</th>
+                                            <th style="text-align: center;">Especialidad</th>
+                                            <th style="text-align: center;">Tipo Contrato</th>
+                                            <th style="text-align: center;">Disponibilidad</th>
+                                            <th style="text-align: center;">Acciones</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -267,32 +324,32 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
 
         <!-- Modal agregar personal masiva -->
         <div class="modal fade" id="masivaPersonalCreation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Desea ingresar esta información</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Desea ingresar esta información</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
-                <table id="excelTable">
-                    <thead>
+                    <table class="table" id="excelTable">
+                        <thead>
 
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-success" id="saveExcelData">Guardar</button>
+                </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="modalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button class="btn btn-success" id="saveExcelData">Guardar</button>
-            </div>
-            </div>
-        </div>
         </div>
         <!-- FIN modal masiva -->
 
@@ -305,10 +362,14 @@ while($dataPersonal = $responseDbPersonal->fetch_object()){
     <?php require_once('./includes/footerScriptsJs.php') ?>
 
     <!-- xlsx Reader -->
-    <script src="js/valuesValidator/validator.js"></script>
     <script src="js/xlsxReader.js"></script>
     <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
 
+    <!-- Validador intec -->
+    <script src="./js/valuesValidator/validator.js"></script>
+
+    <!-- Validate.js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     
 
 <script>
@@ -319,7 +380,86 @@ $(document).ready(function() {
         fixedHeader: true
     })
 
+
+    $('#addPersonal').validate({
+        rules:{
+            nombres:{
+                required: true,
+                minlength: 3
+            },
+            apellidos:{
+                required: true,
+                minlength: 3
+            },
+            rut:{
+               
+            },
+            especialidad_select:{
+                required : true
+            },
+            contrato_Select:{
+                required : true
+            },
+            cargo_select:{
+                required : true
+            }
+        },
+        messages:{
+            nombres:{
+                required:"Ingrese un valor",
+                minlength:"El largo mínimo es de 3 caracteres"
+            },
+            apellidos:{
+                required:"Ingrese un valor",
+                minlength:"El largo mínimo es de 3 caracteres"
+            },
+            rut:{
+                
+            },
+            especialidad_select:{
+                required:"Ingrese un valor"
+            },
+            contrato_Select:{
+                required:"Ingrese un valor"
+            },
+            cargo_select:{
+                required:"Ingrese un valor"
+            }
+
+        },submitHandler: function(form){
+            event.preventDefault();
+            let nombres = $('#nombres').val();
+            let apellidos = $('#apellidos').val();
+            let rut = $('#rut').val();
+            let especialidad = $('#especialidad_select').val();
+            let contrato = $('#contrato_Select').val();
+            let cargo = $('#cargo_select').val();
+
+            let arrayRequest =[ {
+                "nombre" : nombres,
+                "apellido" : apellidos,
+                "rut" : rut,
+                "cargo" : cargo,
+                "especialidad" : especialidad,
+                "contrato" : contrato
+            }]
+
+            $.ajax({
+                type: "POST",
+                url: "ws/personal/addpersonal.php",
+                data:JSON.stringify(arrayRequest),
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                },error: function(data) {
+                    console.log(data.responseText);
+                }
+            })
+        }
+    })
 });
+
+
 
 const dataArrayIndex=['nombres','apellidos','rut','correo','telefono','contrato']
 const dataArray={
@@ -340,7 +480,7 @@ const dataArray={
     'type': 'string',
     'minlength': 3,
     'maxlength' : 50,
-    'notNull' : false },
+    'notNull' : true},
 
     {'name':'cargo',
     'type': 'string',
@@ -378,11 +518,11 @@ $('#excel_input').on('change',async function(){
         let tableBody = $('#excelTable>tbody')
         $('#masivaPersonalCreation').modal('show')
 
-        //Limpiar datos de Excel Previo
+        //LIMPIAR TABLA
         tableBody.empty()
+        tableHead.empty()
 
-        // console.log(tableContent);
-
+        //LLENAR TABLA
         tableHead.append(tableContent[0])
         tableBody.append(tableContent[1])
 
@@ -410,38 +550,52 @@ $('#excelTable>tbody').on('blur', 'td', function() {
     let type = tdProperties.type
     let minlength = tdProperties.minlength
     let maxlength = tdProperties.maxlength
-    let notNull = tdProperties.notnull
+    let notNull = tdProperties.notNull
 
     //OBTENCION DE PROPIEDADES DE VALOR DE CELDA
 
     let tdType = isNumeric(value)
     let tdMinlength = minLength(value,minlength)
     let tdMaxlength = maxLength(value,maxlength)
-    let tdNull = isNull(value)
+
+    let tdNull = isNull(value);
 
     let errorCheck = false
     let tdTitle = ""
+
     //atributos return a td
+    console.log("puede ser nulo ==>",notNull);
+    console.log("ES NULO==>",tdNull);
     if(!notNull  && tdNull){
         errorCheck = false
         tdTitle = "Ingrese un valor"
-    }else if(type === "string" && tdType){
-        errorCheck = true
-    }else if(type === "int" && !tdType){
-        errorCheck = false
-        tdTitle = "Ingrese un número"
+
     }else{
-        errorCheck = true
-    }
-    if(!tdMinlength){
-        tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
-        errorCheck = false
-    }
-    if(!tdMaxlength){
-        tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
-        errorCheck = false
-    }
-    console.log("errorCheck",errorCheck);
+
+        if(type === "string" && tdType){
+            errorCheck = true
+        }else if(type === "int" && !tdType){
+            errorCheck = false
+            tdTitle = "Ingrese un número"
+        }else{
+            errorCheck = true
+        }
+
+        if(!notNull){
+            if(!tdMinlength){
+                tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
+                errorCheck = false
+            }
+            if(!tdMaxlength){
+                tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
+                errorCheck = false
+            }
+        }
+        else{
+
+        }
+
+    } 
     if(!errorCheck){
         $(this).prop('title',tdTitle)
         $(this).addClass('err')
@@ -452,7 +606,6 @@ $('#excelTable>tbody').on('blur', 'td', function() {
 })
 
 //Cerrar Modal
-
 $('#modalClose').on('click',function(){
     $('#masivaPersonalCreation').modal('hide')
 })
@@ -498,9 +651,6 @@ $('#saveExcelData').on('click',function(){
             }
            return returnArray
         })
-
-        console.log("arrayRequest",arrayRequest);
-
             $.ajax({
                 type: "POST",
                 url: "ws/personal/addpersonal.php",
@@ -520,6 +670,51 @@ $('#saveExcelData').on('click',function(){
             text: 'Debe corregir los datos mal ingresado para continuar'
         })
     }
+})
+
+//DELETE PERSONAL 
+$(".deletePersonal").on('click',function(){
+    let tr = $(this).closest('tr');
+    let nombre = $(this).closest('tr').find('.nombre').text()
+    let apellido = $(this).closest('tr').find('.apellido').text()
+    console.log(apellido);
+    let idPersonal  = $(this).closest('tr').find('.id').text()
+
+    Swal.fire({
+        icon: 'info',
+        title: `Desea dar de baja a: ${nombre} ${apellido}`,
+        showCancelButton : true,
+        cancelButtonText : 'Cancelar'
+    }).then((result)=>{
+
+        if(result.isConfirmed){
+
+            let arrayRequest = [{
+                id : idPersonal
+            }]
+
+            $.ajax({
+                type: "POST",
+                url: "ws/personal/deletePersonal.php",
+                data:JSON.stringify(arrayRequest),
+                dataType: 'json',
+                success: async function(data){
+                    
+                   tr.remove()
+                   Swal.fire({
+                        icon: 'success',
+                        title: 'Excelente',
+                        text: data.message
+                    })
+                },error: function(data) {
+                    console.log(data.responseText);
+                }
+            })
+
+        }else{
+            console.log("Cancelado");
+        }
+    })
 })
 
 

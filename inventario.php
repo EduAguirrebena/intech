@@ -23,18 +23,35 @@ $arregloProductos = [[0,1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8,9],[2,3,4,5,6,7,8,9,10
 
         <div class="page-header">
           <h3>Inventario</h3>
-            <div class="col-8 col-lg-3 col-sm-4">
-                <div class="card">
-                    <button
-                        type="button"
-                        class="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target="#xlarge"
-                    >
-                        Agregar
-                    </button>
+          <div class="row">
+              <div class="col-8 col-lg-3 col-sm-4">
+                  <div class="card">
+                      <button
+                          type="button"
+                          class="btn btn-success"
+                          data-bs-toggle="modal"
+                          data-bs-target="#xlarge"
+                      >
+                          Agregar
+                      </button>
+                  </div>
+              </div>
+
+              <div class="col-8 col-lg-3 col-sm-4">
+                    <div class="card">
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#xlarge"
+                        >
+                          Agregar Producots masivo
+                        </button>
+                        <input class="form-control form-control-sm" id="excel_input" type="file" />
+                    </div>
                 </div>
-            </div>
+
+          </div>
         </div>
 
                 
@@ -222,10 +239,66 @@ $arregloProductos = [[0,1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8,9],[2,3,4,5,6,7,8,9,10
                 </div>
               </div>
             </div>
-
-            
-
         </div>
+<!-- Modal agregar personal masiva -->
+<div class="modal fade modal-xl" id="masivaProductoCreation"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Desea ingresar esta información</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div  style="margin:0px 30px" class="modal-body">
+                <table class="table" id="excelTable">
+                    <thead>
+
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-success" id="saveExcelData">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN modal masiva -->
+
+
+
+<!-- Modal errores post agregar Masiva -->
+<div class="modal fade modal-xl" id="modalErrMasiva"  tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Desea ingresar esta información</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div  style="margin:0px 30px" class="modal-body">
+                <table class="table" id="errTable">
+                    <thead>
+
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-success" id="saveExcelData">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FIN modal -->
         
         <?php require_once('./includes/footer.php') ?>
 
@@ -233,15 +306,320 @@ $arregloProductos = [[0,1,2,3,4,5,6,7,8],[1,2,3,4,5,6,7,8,9],[2,3,4,5,6,7,8,9,10
     </div>
 
     <?php require_once('./includes/footerScriptsJs.php') ?>
+
+<!-- xlsx Reader -->
+<script src="js/xlsxReader.js"></script>
+<script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+
+<!-- Validador intec -->
+<script src="./js/valuesValidator/validator.js"></script>
+
+<!-- Validate.js -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     
 
-    <script>
-      $(document).ready(function() {
-          $('#example').DataTable( {
-              fixedHeader: true
-          } );
-      } );
-    </script>
+<script>
+$(document).ready(function() {
+    $('#example').DataTable( {
+        fixedHeader: true
+    } );
+} );
+
+const dataArrayIndex=['Nombre producto','marca','modelo','categoria asociada','item asociado','cantidad','precio compra','precio estimado arriendo']
+const dataArray={
+    'xlsxData' : 
+    [{'name':'Nombre producto',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false }
+    ,
+    {'name':'marca',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'modelo',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : true},
+
+    {'name':'categoria asociada',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'item asociado',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 15,
+    'notNull' : false },
+
+    {'name':'cantidad',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'precio compra',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false },
+
+    {'name':'precio estimado arriendo',
+    'type': 'string',
+    'minlength': 3,
+    'maxlength' : 50,
+    'notNull' : false }]
+}
+
+//Funcion que verifica la extension del archivo ingresado
+function GetFileExtension(){
+    fileName = $('#excel_input').val();
+    extension = fileName.split('.').pop();
+    return extension;
+}
+
+$('#excel_input').on('change',async function(){
+    const extension = GetFileExtension()
+    if(extension == "xlsx"){
+
+        const tableContent = await xlsxReadandWrite(dataArray);
+        let tableHead= $('#excelTable>thead')
+        let tableBody = $('#excelTable>tbody')
+        $('#masivaProductoCreation').modal('show')
+
+        //LIMPIAR TABLA
+        tableBody.empty()
+        tableHead.empty()
+        //LLENAR TABLA
+        tableHead.append(tableContent[0])
+        tableBody.append(tableContent[1])
+
+    }else(
+        Swal.fire({
+            icon: 'error',
+            title: 'Ups',
+            text: 'Debes cargar un Excel',
+        })
+    )
+})
+
+
+$('#excelTable>tbody').on('blur', 'td', function() {
+
+let value = $(this).text()
+
+//obtencion de las propiedades del TD
+let tdListClass = $(this).attr("class").split(/\s+/);
+let tdClass = tdListClass[0]
+let tdPropertiesIndex = dataArrayIndex.indexOf(tdClass)
+let tdProperties = dataArray.xlsxData[tdPropertiesIndex]
+
+// SETEO DE PROPIEDADES
+let type = tdProperties.type
+let minlength = tdProperties.minlength
+let maxlength = tdProperties.maxlength
+let notNull = tdProperties.notNull
+
+//OBTENCION DE PROPIEDADES DE VALOR DE CELDA
+
+let tdType = isNumeric(value)
+let tdMinlength = minLength(value,minlength)
+let tdMaxlength = maxLength(value,maxlength)
+
+let tdNull = isNull(value);
+
+let errorCheck = false
+let tdTitle = ""
+
+//atributos return a td
+if(!notNull  && tdNull){
+    errorCheck = false
+    tdTitle = "Ingrese un valor"
+
+}else{
+
+    if(type === "string" && tdType){
+        errorCheck = true
+    }else if(type === "int" && !tdType){
+        errorCheck = false
+        tdTitle = "Ingrese un número"
+    }else{
+        errorCheck = true
+    }
+    if(!notNull){
+        if(!tdMinlength){
+            tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
+            errorCheck = false
+        }
+        if(!tdMaxlength){
+            tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
+            errorCheck = false
+        }
+    }
+    else{
+    }
+} 
+if(!errorCheck){
+    $(this).prop('title',tdTitle)
+    $(this).addClass('err')
+}else{
+    $(this).prop('title',"")
+    $(this).removeClass('err')
+}
+})
+
+//Cerrar Modal
+$('#modalClose').on('click',function(){
+    $('#masivaProductoCreation').modal('hide')
+})
+
+
+
+//GUARDAR REGISTROS MASIVA DENTRO DE MODAL
+$('#saveExcelData').on('click',function(){
+    let counterErr = 0;
+
+    $('#excelTable>tbody td').each(function() {
+
+        var cellText = $(this).hasClass('err')  
+        if(cellText){
+            counterErr ++ 
+        }
+
+    });
+
+    if(counterErr == 0){
+
+        let arrTd = []
+        let preRequest = []
+
+        $('#excelTable>tbody tr').each(function(){
+
+            arrTd = []
+            let td = $(this).find('td')
+
+            td.each(function(){
+                let tdTextValue= $(this).text()
+                arrTd.push(tdTextValue)
+            })
+            preRequest.push(arrTd)
+        });
+
+        const arrayRequest = preRequest.map(function(value){
+            let returnArray = {
+                "nombre" : value[0],
+                "marca" : value[1],
+                "modelo" : value[2],
+                "categoria" : value[3],
+                "item" : value[4],
+                "stock" : value[5],
+                "precioCompra" : value[6],
+                "precioArriendo" : value[7]
+            }
+           return returnArray
+        })
+            $.ajax({
+                type: "POST",
+                url: "ws/productos/addProductos.php",
+                data:JSON.stringify(arrayRequest),
+                dataType: 'json',
+                success: async function(data){
+                    $('#masivaProductoCreation').modal('hide')
+                    $('#excelTable>tbody').empty()
+
+                    let errMarcalLength = data.errMarca.length
+                    let errItemCatLength = data.errHasItem.length 
+                    let sumErr = errMarcalLength + errItemCatLength
+                    let total = data.total
+
+                    if(sumErr === 0){
+                        Swal.fire({
+                            icon: 'Success',
+                            title: 'Excelente',
+                            text: `Se han cargado todos los productos (${total})`
+                        })
+                    }else{
+                        let thead = $('#errTable>thead')
+                        let tbody = $('#errTable>tbody')
+
+                        let theadTh = `<tr>
+                            <th>Nombre producto</th>
+                        	<th>marca</th>
+                            <th>modelo</th>
+                            <th>categoria asociada</th>
+                            <th>item asociado</th>
+                            <th>cantidad</th>
+                            <th>precio compra</th>
+                            <th>precio estimado arriendo</th>
+                            <th>Causa de error</th></tr>`
+
+                        thead.append(theadTh);
+
+                        let tbodyMarca;
+                        if(errMarcalLength > 0){
+
+                            data.errMarca.forEach(value => {
+                                tbody.append(
+                                    `<tr>
+                                    <td>${value.nombre}</td>
+                                    <td>${value.marca}</td>
+                                    <td>${value.modelo}</td>
+                                    <td>${value.categoria}</td>
+                                    <td>${value.item}</td>
+                                    <td>${value.stock}</td>
+                                    <td>${value.precioCompra}</td>
+                                    <td>${value.precioArriendo}</td>
+                                    <td>La marca no existe</td>
+                                </tr>`
+                                )
+                            });
+
+                           
+                        }
+                        let tbodyItem;
+                        if(errItemCatLength > 0){
+
+                            data.errHasItem.forEach(value => {
+                                tbody.append(
+                                    `<tr>
+                                        <td>${value.nombre}</td>
+                                        <td>${value.marca}</td>
+                                        <td>${value.modelo}</td>
+                                        <td>${value.categoria}</td>
+                                        <td>${value.item}</td>
+                                        <td>${value.stock}</td>
+                                        <td>${value.precioCompra}</td>
+                                        <td>${value.precioArriendo}</td>
+                                        <td>Categoria / Item</td>
+                                    </tr>`
+                                )
+                            })
+
+                        }
+                        $('#modalErrMasiva').modal('show')
+                    }
+                },error: function(data) {
+                    console.log(data.responseText);
+                }
+            })
+
+    }else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Ups',
+            text: 'Debe corregir los datos mal ingresado para continuar'
+        })
+    }
+})
+
+
+</script>
 
   </body>
 </html>

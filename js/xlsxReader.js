@@ -66,10 +66,6 @@ async function xlsxReadandWrite(arrayHead){
         let rows = excel.rows()
         const headers = excel.header()
 
-        console.log(rows);
-        console.log("ArrayCount=>",arrayCount);
-
-
         let xlsxHead =[];
         let xslxType = [];
         let xlsxRow = [];
@@ -80,7 +76,6 @@ async function xlsxReadandWrite(arrayHead){
 
 
         //ARRAY HEADERS EXCEL
-        console.log("headers.row",headers.row);
         headers.row.forEach((element, index) => {
 
             if(index < arrayCount){
@@ -88,7 +83,6 @@ async function xlsxReadandWrite(arrayHead){
             }
 
         })
-        console.log("xlsxHead",xlsxHead);
 
         //ARRAY DATATYPE
 
@@ -147,11 +141,8 @@ async function xlsxReadandWrite(arrayHead){
             if(name !== xlsxHead[index]){
                 counterErrHead ++
             }
-
         })
-        console.log("ERRORES===>>>",counterErrHead);
         if(counterErrHead == 0){
-
             let cell = ""
             let ifNull=""
             let td = ""
@@ -167,19 +158,17 @@ async function xlsxReadandWrite(arrayHead){
             });
             tHead += `</tr>`    
 
-            console.log("ARRAYCOUNT===>",arrayCount);
-            console.log("xlsxRow",xlsxRow);
+
             let rowCount  = xlsxRow.length;
             for(i = 0 ; i < rowCount ; i++){
                 td += `<tr>`
                 cell = xlsxRow[i]
 
-
                 for (j = 0 ; j < arrayCount ; j ++){
 
-                    ifNull = xlsxNull[i]
-                    minlength = xslxMinLength[i]
-                    maxlength = xlsxMaxLength[i]
+                    ifNull = xlsxNull[j]
+                    minlength = xslxMinLength[j]
+                    maxlength = xlsxMaxLength[j]
 
                     let tdName = xlsxHead[j]
                     let tdType = xslxType[j]
@@ -191,16 +180,14 @@ async function xlsxReadandWrite(arrayHead){
                     let valueTypeVerification;
 
                     let nullcheck = isNull(tdCell)
+
                     if(!tdNull && nullcheck){
 
                         nullValidated = true
-                        tdCell = ""
                         tdTitle = "Ingrese un valor";
                         valueTypeVerification = true
 
-
                     }else{
-
                         if(tdType === "int"){
     
                             valueTypeVerification = isNumeric(tdCell)
@@ -210,35 +197,36 @@ async function xlsxReadandWrite(arrayHead){
                                 tdTitle = ""
                             }
                         }
-    
                         if(tdType === "string"){
                             valueTypeVerification = false
                         }
                     }
-                       
 
                     let boolType;
-                    console.log("NULLVALIDATED  ==>",nullValidated);
                     if(nullValidated){
-
+                        boolType = false
                     }else{
 
                         if(tdType == "int"){
                             boolType = true
-                            console.log("valueTypeVerification",valueTypeVerification);
                         }
-
                         if(tdType == "string"){
                             boolType = false
                         }
-
+                        
                     }
                     
                     let tdTest = ""
                     if(boolType === valueTypeVerification){
+                        if(tdCell == null){
+                            tdCell = ""
+                        }
                         td += `<td class="${tdName}" title="${tdTitle}"  contenteditable>${tdCell}</td>`
                         tdTest = `<td class="${tdName}" title="${tdTitle}"  contenteditable>${tdCell}</td>`
                     }else{
+                        if(tdCell == null){
+                            tdCell = ""
+                        }
                         td += `<td class="${tdName} err" title="${tdTitle}" contenteditable>${tdCell}</td>`
                         tdTest = `<td class="${tdName} err" title="${tdTitle}" contenteditable>${tdCell}</td>`
                     }
