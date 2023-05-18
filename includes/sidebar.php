@@ -122,6 +122,9 @@
               <a href="proximosEventos.php">Proximos Eventos</a>
             </li>
             <li class="submenu-item">
+              <a href="proyectos.php">Lista de Eventos</a>
+            </li>
+            <li class="submenu-item">
               <a href="">Crear Evento</a>
             </li>
             <li class="submenu-item">

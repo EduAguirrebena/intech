@@ -2,4 +2,99 @@
     border: 1px solid red
 }
 
+.dropdown-menu li{
+	position: relative;
+}
+
+.dropdown-menu .submenu{
+	display: none;
+	position: absolute;
+} 
+
+.dropdown-menu>li:hover>.submenu{
+	display: block;
+	left: 100%;
+	top: -7px;
+}
+
+.categoria{
+	cursor: pointer;
+}
+.item{
+	cursor: pointer;
+}
+
+
+/* DRAG AND DROP */
+
+  #sortable1, #sortable2 {
+    border: 2px solid rgb(28, 19, 189);
+    background-color: #2212a8;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 350px;
+    list-style-type: none;
+	  min-width: 95%;
+    margin: 0;
+    padding: 5px 0 0 0;
+    float: left;
+    margin-right: 10px;
+  }
+  #sortable1 li, #sortable2 li {
+    color: white;
+    background: #4525d2;
+    font-weight: 600;
+    margin: 0 5px 5px 5px;
+    padding: 5px;
+    font-size: 1.2em;
+  }
+  #sortable1 li{
+    border-radius: 5px;
+    cursor: pointer;
+    pointer-events: visibleStroke;
+  }
+
+  #sortable1 #sortable2{
+	border: 1px solid black;
+  }
+
+  .notSelectedProd,.selectedProd{
+	border: 1px solid #eee;
+	min-height: 350px;
+  }
+
+
+  #sortable3{
+	min-width: 100%;
+
+  }
+
+  #sortable3,#sortable4{
+	min-width: 100%;
+	border: 1px solid blue;
+  }
+  #sortable3,#sortable4 tr{
+	min-width: 100%;
+	border: 1px solid rgb(71, 71, 174);
+  }
+
+  .box{
+    border: 1px solid #4525d2;
+  }
+
+  input[type=text],input[type=number] {
+   border:1px solid gray;
+  }
+
+  .form-select{
+    border:1px solid gray;
+  }
+
+
+
+
+
+
+
+
 
