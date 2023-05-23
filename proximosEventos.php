@@ -1,34 +1,27 @@
 <?php 
-  require_once('./ws/bd/bd.php');
-  $conn = new bd();
-  $conn->conectar();
 
-  $vehiculos= [];
-  $queryVehiculos = "SELECT v.id ,v.patente ,v.personal_id  FROM vehiculo v
-                      INNER JOIN personal p on p.id = v.personal_id 
-                      INNER JOIN empresa e on e.id = p.empresa_id 
-                      WHERE e.id = 1;";
+  require_once('./ws/pais_region_comuna/Comuna.php');
+  require_once('./ws/vehiculo/Vehiculo.php');
+  require_once('./ws/personal/Personal.php');
+  require_once('./ws/productos/Producto.php');
+  require_once('./ws/pais_region_comuna/Region.php');
+  
+  $empresaId =1;
 
-  if($responseBdVehiculos = $conn->mysqli->query($queryVehiculos)){
-    while($dataVehiculos = $responseBdVehiculos->fetch_object()){
-      $vehiculos [] = $dataVehiculos;
-    }
-  }
+  // $obj = (object) array('idRegion' => 1);
+  // $comunas = getComunasByRegion($obj);
+  $vehiculos = getVehiculos($empresaId);
+  $personal =  getPersonal($empresaId);
+  $productos = getProductos($empresaId);
+  $regiones =getRegiones();
 
-  $regiones = [];
-  $queryRegiones = 'Select id, region from region';
-  if($responseRegion = $conn->mysqli->query($queryRegiones)){
-    while($dataRegiones = $responseRegion->fetch_object()){
-      $regiones[] = $dataRegiones;
-    }
-  }
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <?php 
-require_once('./includes/head.php');
-$active = 'proximosEventos';
+  require_once('./includes/head.php');
+  $active = 'proximosEventos';
 ?>
 
   <body>
@@ -55,49 +48,7 @@ $active = 'proximosEventos';
           <div class="card-body">
             <div class="form-group">
               <div class="mt-2">
-                <form id="projectForm">
-                  <div class="row">
-                    <div class="col-md-4 col-12">
-                      <label for="inputProjectName">Nombre del proyecto</label>
-                      <input type="text" class="form-control" name="txtProjectName" id="inputProjectName" placeholder="Nombre">
-                    </div>
-                    <div class="col-md-3 col-12">
-                      <label for="fechaInicio">Fecha del Proyecto</label>
-                      <input type="date" class="form-control" name="dpInicio" id="fechaInicio">
-                    </div>
-                    <div class="col-md-3 col-12">
-                      <label for="fechaTermino">Fecha del Proyecto</label>
-                      <input type="date" class="form-control" name="dpTermino" id="fechaTermino">
-                    </div>
-                  </div>
-                  <div class="mt-2 row">
-                    <div class="col-lg-6 col-md-12">
-                      <label for="direccionInput">Direccion del proyecto</label>
-                      <input type="text" class="form-control" name="txtDir" id="direccionInput" placeholder="Dirección">
-                    </div>
-                    <div class="col-lg-3 col-md-12">
-                      <label for="inputNombreCliente">Nombre Cliente</label>
-                      <input type="text" class="form-control" name="txtCliente" id="inputNombreCliente" placeholder="Cliente">
-                    </div>
-                  </div>
-                  
-                  <a class="btn btn-primary mt-2" data-bs-toggle="collapse" href="#commentArea" 
-                     role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Añadir comentarios
-                  </a>
-                  <hr>
-                  <div class="collapse" id="commentArea">
-                    <div class="form-floating">
-                      <textarea class="form-control" style="min-height: 150px;" placeholder=""
-                          id="commentProjectArea" name="txtAreaComments"></textarea>
-                      <label for="commentProjectArea">Comentarios</label>
-                    </div>                  
-                  </div>
-                  <button type="submit" style="display: none;" id="hiddenAddProject" class="btn btn-success ml-1 col-4">
-                      <i class="bx bx-check d-block d-sm-none"></i>
-                      <span class="d-none d-sm-block">Guardar</span>
-                  </button>
-                </form>
+                <?php include_once('./includes/forms/projectForm.php')?>
               </div>
             </div>
           </div>
@@ -113,75 +64,64 @@ $active = 'proximosEventos';
             <div class="card-body">
               <div class="row">
                 <div class="col-8 notSelectedProd moveProd">
-                  <table id="sortable3" class="sortingAddProduct">
-                    <thead>
-                      <th>Nombre</th>
-                      <th>Categoria</th>
-                      <th>Item</th>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Cable</td>
-                        <td>Audio</td>
-                        <td>Sonido</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div class="dragItemsHead">
+                    <p class="">Nombre</p>
+                    <p class="">Cateogria</p>
+                    <p class="">Item</p>
+                    <p class="">Precio arriendo</p>
+                  </div>
+                  <div id="itemList">
+                    <table>
+                      <thead style="display:none">
+                        <th>Nombre</th>
+                        <th>Cateogria</th>
+                        <th>Item</th>
+                        <th>Precio arriendo</th>
+                      </thead>
+                      <tbody id="tableDrop">
+                        <?php foreach ($productos as $key => $producto):?>
+                          <div class="dragItemsBody">
+                            <tr class="dropItemtr">
+                              <td class=""><?=$producto->nombre?></td>
+                              <td class=""><?=$producto->categoria?></td>
+                              <td class=""><?=$producto->item?></td>
+                              <td class=""><?=$producto->precio_arriendo?></td>
+                            </tr>
+                          </div>
+                        <?php endforeach;?>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div class="col-4 selectedProd moveProd">
-                  <table id="sortable4" class="sortingAddProduct">
-                    <thead>
-                      <th>Nombre</th>
-                      <th>Categoria</th>
-                      <th>Item</th>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                  </table>
+
+                
+                <!-- <div class="col-4 selectedProd moveProd">
+                  <div class="dragItemsHead">
+                    <p class="">Nombre</p>
+                    <p class="">Cateogria</p>
+                    <p class="">Item</p>
+                    <p class="">Precio arriendo</p>
+                  </div> -->
+                  <div class="col-4" id="tbodyReceive">
+                    <table>
+                      <thead >
+                        <th>Nombre</th>
+                        <th>Cateogria</th>
+                        <th>Item</th>
+                        <th>Precio arriendo</th>
+                      </thead>
+                      <tbody id="">
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-          
-        <div class="row">
-          <div class="card col-12 box" style="max-height: 350px; overflow-y: scroll;overflow-x: hidden;">
-            <div class="row">
-              <div class="col-8 mt-3">
-                <h4>Asignar Vehículo</h4>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col-6 ">
-                  <ul id="sortable1" class="connectedSortable" style="min-height: 150px;">
-                    <?php
-                      foreach ($vehiculos as $key => $value) {
-                        echo "<li class=".$value->id.">".$value->patente."</li>";
-                      }
-                    ?>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                    <li>Item</li>
-                  </ul>
-                </div>
-                <div class="col-6">
-
-                  <ul id="sortable2" class="connectedSortable" style="min-height: 150px;">
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
+         <?php require_once('./includes/dragAndDrop/dragVehiculos.php');
+               require_once('./includes/dragAndDrop/dragPersonal.php');
+          ?> 
         <div class="card box">
           <div class="row">
             <div class="card-header col-12">
@@ -197,6 +137,9 @@ $active = 'proximosEventos';
             <div class="col-3 mt-2 mb-2" >
               <button class="btn btn-success" id="submitProject">Crear Proyecto</button>
             </div>
+            <div class="col-3 mt-2 mb-2" >
+              <button class="btn btn-success" id="verarray">Ver array</button>
+            </div>
           </div>
         </div>
 
@@ -210,73 +153,163 @@ $active = 'proximosEventos';
     <?php  require_once('./includes/Modal/cliente.php')?>
     <!-- FIN require Modal -->
     <?php require_once('./includes/footerScriptsJs.php') ?>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
   </body>
 
   <script>
-      $(function() {
-        
-      });
-
 
       async function addLugar(lugarRequest){
-        console.log(JSON.stringify({request:lugarRequest,
-                                    tipo: "add"}));
         return $.ajax({
-              type: "POST",
-              url: 'ws/lugar/lugar.php',
-              data: JSON.stringify({request:lugarRequest,
-                                    tipo: "add"}),
-              dataType: 'json',
-              success: function(data){
-                let id_lugar = data.id_lugar;
-              },error: function(response){
-                console.log(response);
-              }
-          })
+                type: "POST",
+                url: 'ws/lugar/lugar.php',
+                data: JSON.stringify({request:lugarRequest,
+                                      action: "addLugar"}),
+                dataType: 'json',
+                success: function(data){
+                  let id_lugar = data.id_lugar;
+                  console.log("LUGAR",data);
+                },error: function(response){
+                  console.log(response);
+                }
+            })
       }
       async function addDir(dirRequest){
-        console.log(dirRequest);
         return $.ajax({
-            type: "POST",
-            url: 'ws/direccion/direccion.php',
-            data: JSON.stringify({request:dirRequest,
-                                  tipo: "add"}),
-            dataType: 'json',
-            success: function(data){
+              type: "POST",
+              url: 'ws/direccion/direccion.php',
+              data: JSON.stringify({request:dirRequest,
+                                    action: "addDireccion"}),
+              dataType: 'json',
+              success: function(data){
 
-              id_direccion = data.id_direccion;
-              
-            },error: function(response){
-              
-            }
-          })
+                id_direccion = data.id_direccion;
+                console.log("DIRECCION",data);
+
+                
+              },error: function(response){
+                
+              }
+            })
       }
       async function addCliente(clienteRequest){
-        console.log(clienteRequest);
         return $.ajax({
                 type: "POST",
                 url: 'ws/cliente/cliente.php',
                 data: JSON.stringify({request:{clienteRequest},
-                                      tipo: "add"}),
+                                      tipo: "addCliente"}),
                 dataType: 'json',
                 success: function(data){
                   idCliente = data.idCliente
+                  console.log("CLIENTE",data);
                 },error: function(response){
                   console.log(response.responseText);
                 }
               })
       }
 
+      async function createProject(requestProject){
+        return $.ajax({
+                  type: "POST",
+                  url: 'ws/proyecto/proyecto.php',
+                  data: JSON.stringify({request:{requestProject},
+                                        action: "addProject"}),
+                  dataType: 'json',
+                  success: function(data){
+                    console.log("RESPONSE PROYECTO",  data);
+                  },error: function(response){
+                    console.log(response.responseText);
+                  }
+                })
+      }
+
+      async function assignvehicleToProject(requestasssign){
+          return $.ajax({
+                    type: "POST",
+                    url: 'ws/vehiculo/Vehiculo.php',
+                    data: JSON.stringify({request:requestasssign,
+                                          action: "addVehicleToProject"}),
+                    dataType: 'json',
+                    success: function(data){
+  
+                      console.log("RESPONSE AGIGNACION VEHICULO",  data);
+  
+                    },error: function(response){
+                      console.log(response.responseText);
+                    }
+                  })
+      }
+
+      async function assignPersonal(requestasssign){
+        try{
+          return $.ajax({
+                    type: "POST",
+                    url: 'ws/personal/Personal.php',
+                    data: JSON.stringify({request:requestasssign,
+                                          action: "addPersonalToProject"}),
+                    dataType: 'json',
+                    success: function(data){
+  
+                      console.log("RESPONSE AGIGNACION PERSONAL",  data);
+  
+                    },error: function(response){
+                        console.log(response.responseText);
+                    }
+                  })
+        }catch(e){
+          console.log(e);
+        }
+      }
+
+      //BOTON DE TEST
+      $('#verarray').on('click',function(){
+
+        let arrayVehiclesID =[]
+        $('#sortable2 > li').each(function(data){
+          let vClass = $(this).attr('class')
+          arrayVehiclesID.push({
+            idVehiculo : vClass
+          })
+        })
+        const requestVehicle = arrayVehiclesID.map(vId =>{
+            return {idProject:1,
+                    idVehicle:vId.idVehiculo};
+        })
+
+        console.log(requestVehicle);
+        try{
+          return $.ajax({
+                    type: "POST",
+                    url: 'ws/vehiculo/Vehiculo.php',
+                    data: JSON.stringify({request:requestVehicle,
+                                          tipo: "addtoProject"}),
+                    dataType: 'json',
+                    success: function(data){
+  
+                      console.log("RESPONSE AGIGNACION VEHICULO",  data);
+  
+                    },error: function(response){
+  
+                    }
+                  })
+        }catch(e){
+          console.log(e);
+        }
+
+        
+      })
+      //FIN BOTON TEST
       $(document).ready(function() {
 
         $( "#sortable1, #sortable2" ).sortable({
           connectWith: ".connectedSortable"
         }).disableSelection();
 
-        $( "#sortable3, #sortable4" ).sortable({
-          connectWith: ".moveProd"
+        $( "#sortablePersonal1, #sortablePersonal2" ).sortable({
+          connectWith: ".connectedSortablePersonal"
+        }).disableSelection();
+
+        $( "#tableDrop, #tbodyReceive" ).sortable({
+          connectWith: ".dropItemtr"
         }).disableSelection();
 
         //VALIDACION DE CREACION DE CLIENTE PROYECTO
@@ -291,12 +324,10 @@ $active = 'proximosEventos';
             }
           },submitHandler:function(){
               event.preventDefault()
-
               let nombre = $('#txtNombreCliente').val()
               $('#inputNombreCliente').val(nombre)
               $('#clienteModal').modal('hide')
               let request = {nombre:nombre}
-
           }
         })
 
@@ -342,7 +373,6 @@ $active = 'proximosEventos';
             let regionInput = $('#regionSelect option:selected').text()
             let comunaInput = $('#comunaSelect option:selected').text()
             let postal_code = $('#txtcodigo_postal').val()
-            
 
             $('#direccionInput').val(`${dir} ${numDir} ${depto}, ${comunaInput}, ${regionInput}`)
 
@@ -367,7 +397,7 @@ $active = 'proximosEventos';
               },
               txtCliente:{
               }
-            },message:{
+            },messages:{
               txtProjectName:{
                 required:"Ingrese un valor"
               },
@@ -413,7 +443,6 @@ $active = 'proximosEventos';
               }]
 
               const resultDireccion = await Promise.all([addDir(requestDir),addCliente(requestCliente)])
-              console.log(resultDireccion);
               id_direccion = resultDireccion[0].id_direccion
               idCliente = resultDireccion[1].idCliente
 
@@ -432,8 +461,6 @@ $active = 'proximosEventos';
               let comentarios = $('#commentProjectArea').val()
 
               const responseLugar = await Promise.all([addLugar(lugarRequest)])
-              console.log("REQUEST LUGARID",responseLugar);
-
               id_lugar = responseLugar[0].id_lugar
 
               let requestProject = {nombre_proyecto:projectName,
@@ -444,19 +471,43 @@ $active = 'proximosEventos';
                                       comentarios:comentarios
                                       // empresa_id:1
                                     }
-              console.log(requestProject);
 
-              $.ajax({
-                  type: "POST",
-                  url: 'ws/proyecto/proyecto.php',
-                  data: JSON.stringify({request:{requestProject},
-                                        tipo: "add"}),
-                  dataType: 'json',
-                  success: function(data){
-                    console.log("RESPONSE PROYECTO",  data);
-                  },error: function(response){
-                  }
+                const responseProject = await Promise.all([createProject(requestProject)])
+                idProject = responseProject[0].id_project;
+                
+                
+                let arrayVehiclesID =[]
+                $('#sortable2 > li').each(function(){
+                  let vClass = $(this).attr('class')
+                  arrayVehiclesID.push({
+                    idVehiculo : vClass
+                  })
                 })
+
+                const requestVehicle = arrayVehiclesID.map(vId =>{
+                    return {idProject:idProject,
+                            idVehicle:vId.idVehiculo};
+                })
+
+                let arrayPersonal =[]
+                $('#sortablePersonal2 > li').each(function(){
+                  let vClass = $(this).attr('class')
+                  arrayPersonal.push({
+                    idPersonal : vClass
+                  })
+                })
+                const requestPersonal = arrayPersonal.map(vId =>{
+                    return {idProject:idProject,
+                            idPersonal:vId.idPersonal};
+                })
+
+                console.log("requestPersonal",requestPersonal);
+                console.log("requestVehicle",requestVehicle);
+
+
+                const responseAssignPersonal = await Promise.all([assignvehicleToProject(requestVehicle),assignPersonal(requestPersonal)])
+                response = responseAssignPersonal
+                console.log("responseAssignPersonal",response);
             }
           })
       })
@@ -473,27 +524,30 @@ $active = 'proximosEventos';
       //OPTIONS CHANGE DEPENDIENDO DE REGION SELECCIONADA
       $('#regionSelect').on('blur',function(){
         let idRegion = $(this).val();
-        let request = {'request' : {"idRegion":idRegion},
-                       'tipo' :'get'}
         $.ajax({
-            type: "POST",
-            url: 'ws/pais_region_comuna/comuna.php',
-            data: JSON.stringify(request),
+            type: 'POST',
+            url: 'ws/pais_region_comuna/Comuna.php',
+            data: {
+              action: 'getComunasByRegion',
+              jsonRequest: JSON.stringify({ idRegion: idRegion })
+            },
             dataType: 'json',
-            success: function(data){
+            success: function(response) {
+
+              var comuna = response ;
               $('#comunaSelect').empty();
               $('#comunaSelect').append(new Option("",""));
-              data.forEach(comuna => {
-                $('#comunaSelect').append(new Option(comuna.comuna, comuna.id));
-              });
-              
-            },error: function(response){
-
+              comuna.forEach(comuna => {
+                $('#comunaSelect').append(new Option(comuna.comuna, comuna.id))
+              })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error(textStatus, errorThrown);
             }
-        })
+          });
       })
 
-      //GATILLAR EVENTO CLICK EN BOTON SUBMIT DE FORM PARA CRACION DEL PROYECTO
+      //GATILLAR EVENTO CLICK EN BOTON SUBMIT DE FORM PARA CREACION DEL PROYECTO
       $('#submitProject').on('click',function(){
         $('#hiddenAddProject').trigger('click')
       })

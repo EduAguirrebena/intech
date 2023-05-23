@@ -446,8 +446,8 @@ $(document).ready(function() {
 
             $.ajax({
                 type: "POST",
-                url: "ws/personal/addpersonal.php",
-                data:JSON.stringify(arrayRequest),
+                url: "ws/personal/Personal.php",
+                data:JSON.stringify({action:"addPersonalToProject",request:{arrayRequest}}),
                 dataType: 'json',
                 success: function(data){
                     console.log(data);
@@ -653,8 +653,8 @@ $('#saveExcelData').on('click',function(){
         })
             $.ajax({
                 type: "POST",
-                url: "ws/personal/addpersonal.php",
-                data:JSON.stringify(arrayRequest),
+                url: "ws/personal/Personal.php",
+                data:JSON.stringify({action:"addPersonalToProject",request:{arrayRequest}}),
                 dataType: 'json',
                 success: async function(data){
                     console.log(data);

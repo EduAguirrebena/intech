@@ -6,6 +6,8 @@ class bd{
     protected $database;
     protected $port;
     public $mysqli;
+
+
     
     public function __construct() {
 
@@ -24,6 +26,22 @@ class bd{
         $this->port ='3306';
         
     }
+
+
+    // protected $mysqli;
+
+    // public function bd(){
+    //     $this->mysqli = new mysqli('DB_HOST','DB_USER','DB_PASS','DB_NAME');
+
+    //     if($this->mysqli->connect_errno){
+    //         echo "fallo al conectar a Mysql:". $this->mysqli->connect_error;
+    //         return;
+    //     }
+
+    //     $this->mysqli->set_charset('DB_CHARSET');
+    // }
+
+
 
     public function conectar() {
         

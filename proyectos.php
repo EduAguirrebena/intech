@@ -1,32 +1,24 @@
 <?php 
-
 require_once('./ws/bd/bd.php');
+require_once('./ws/vehiculo/Vehiculo.php');
+require_once('./ws/pais_region_comuna/Region.php');
+require_once('./ws/proyecto/Proyecto.php');
+require_once('./ws/personal/Personal.php');
 $conn = new bd();
 $conn ->conectar();
 
-$queryProyectos = 'SELECT p.nombre_proyecto,p.empresa_id,c.nombre, 
-CONCAT(d.direccion," ",d.numero,", ",co.comuna,", ",r.region) AS direccion,
-p.fecha_inicio,
-p.fecha_termino,
-p.comentarios 
-FROM proyecto p 
-INNER JOIN lugar l ON l.id = p.lugar_id 
-INNER JOIN cliente c ON c.id = p.cliente_id 
-INNER JOIN empresa e ON e.id = p.empresa_id 
-INNER JOIN direccion d ON d.id  = l.direccion_id 
-INNER JOIN comuna co ON co.id = d.comuna_id  
-INNER JOIN region r ON r.id = co.region_id 
-Where e.id = 1';
+//Variables que manipulan condiciones if en Form proyecto
+$detalle = true;
 
+//FALTA SETTEAR POR SESSION
+$empresaId = 1;
 
+//GET ARRAYS
+$vehiculos = getVehiculos($empresaId);
+$regiones = getRegiones();
+$proyectos = getMyProjects($empresaId);
+$personal = getPersonal($empresaId);
 
-
-//BUILD PROYECTOS
-if($responseBdProjects = $conn->mysqli->query($queryProyectos)){
-    while($dataProjects = $responseBdProjects->fetch_objecT()){
-        $proyectos [] = $dataProjects;
-    }
-}
 
 ?>
 
@@ -65,34 +57,39 @@ if($responseBdProjects = $conn->mysqli->query($queryProyectos)){
                             <table class="table" id="tableProjects" class="display" style="width:100%">
                                 <thead>
                                     <tr>
-                                        
+                                        <th style="text-align: center;">Id</th>
                                         <th style="text-align: center;">Nombre Proyecto</th>
                                         <th style="text-align: center;">Nombre Cliente</th>
                                         <th style="text-align: center;">Dirección</th>
                                         <th style="text-align: center;">Fecha Inicio</th>
                                         <th style="text-align: center;">Fecha Termino</th>
+                                        <th style="text-align: center;">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php 
                                         foreach($proyectos as $proyecto){
                                             echo '<tr>';
-                                                echo '<td class="patente" align=center>'.$proyecto->nombre_proyecto.'</td>';
+                                                echo '<td class="idProject" align=center>'.$proyecto->id.'</td>';
+                                                echo '<td align=center>'.$proyecto->nombre_proyecto.'</td>';
                                                 echo '<td align=center>'.$proyecto->nombre.'</td>';
                                                 echo '<td align=center>'.$proyecto->direccion.'</td>';
                                                 echo '<td align=center>'.$proyecto->fecha_inicio.'</td>';
                                                 echo '<td align=center>'.$proyecto->fecha_termino.'</td>';
+                                                echo '<td data-tooltip="Ver detalles" align=center><i style="cursor:pointer;" class="fa-solid fa-eye openDetalleModal"></i></td>';
                                             echo '</tr>';
                                         }
                                     ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        <td style="text-align: center;">Id</td>
                                         <td style="text-align: center;">Nombre Proyecto</td>
                                         <td style="text-align: center;">Nombre Cliente</td>
                                         <td style="text-align: center;">Dirección</td>
                                         <td style="text-align: center;">Fecha Inicio</td>
                                         <td style="text-align: center;">Fecha Termino</td>
+                                        <td style="text-align: center;">Acciones</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -102,8 +99,11 @@ if($responseBdProjects = $conn->mysqli->query($queryProyectos)){
               </div>
             </div>
         </div>
-        <?php require_once('./includes/footer.php') ?>
 
+        <?php 
+            require_once('./includes/footer.php');
+            require_once('./includes/Modal/detallesProyecto.php');
+        ?>
       </div>
     </div>
 
@@ -111,11 +111,72 @@ if($responseBdProjects = $conn->mysqli->query($queryProyectos)){
 
 <script>
 $(document).ready(function() {
+
     $('#tableProjects').DataTable( {
         fixedHeader: true
-    } );
-})  
-</script>
+    } )
 
-  </body>
+    $( "#sortable1, #sortable2" ).sortable({
+          connectWith: ".connectedSortable"
+    }).disableSelection();
+
+    $( "#sortablePersonal1, #sortablePersonal2" ).sortable({
+          connectWith: ".connectedSortablePersonal"
+        }).disableSelection();
+})
+
+$('.openDetalleModal').on('click',function(){
+
+    let projectId = $(this).closest('tr').find('.idProject').text()
+    console.log(projectId);
+
+    $('#proyectosModal').modal('show');
+
+    let projectRequest={
+        idProject : projectId,
+        asignados : true
+    }
+
+
+    $.ajax({
+        type: "POST",
+        url: 'ws/proyecto/Proyecto.php',
+        data: JSON.stringify({request:{projectRequest},
+                                action: "getProjectResume"}),
+        dataType: 'json',
+        success: function(response){
+            console.log(response);
+            response.dataProject.forEach(data => {
+                console.log(data.nombre_cliente);
+
+                $('#inputProjectName').val(data.proyecto)
+                $('#fechaInicio').val(data.fecha_inicio)
+                $('#fechaTermino').val(data.fecha_termino)
+                $('#direccionInput').val(data.direccion+' '+data.numero+' '+data.dpto+', '+data.comuna+', '+data.region)
+                $('#inputNombreCliente').val(data.nombre_cliente)
+                $('#commentProjectArea').val(data.comentarios)
+
+                
+            });
+            if(response.asignados.vehiculos.length > 0){
+                response.asignados.vehiculos.forEach(asignado => {
+                    $('#sortable2').append(`<li class="${asignado.id}">${asignado.patente}</li>`)
+                });
+            }
+            if(response.asignados.personal.length > 0){
+                response.asignados.personal.forEach(asignado => {
+                    $('#sortablePersonal2').append(`<li class="${asignado.id}">${asignado.nombre} ${asignado.cargo} ${asignado.especialidad}</li>`)
+                });
+            }
+
+            console.log(response.asignados.vehiculos);
+            console.log(response.asignados.personal);
+            
+        },error: function(err){
+        }
+    })
+})
+</script>
+</body>
+
 </html>

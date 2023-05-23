@@ -310,8 +310,8 @@ $(document).ready(function() {
 
             $.ajax({
                 type: "POST",
-                url: "ws/vehiculo/addVehiculo.php",
-                data:JSON.stringify(arrayRequest),
+                url: "ws/vehiculo/Vehiculo.php",
+                data:JSON.stringify({action:"addVehicle",vehicleData:arrayRequest}),
                 dataType: 'json',
                 success: function(data){
 
@@ -524,8 +524,8 @@ $('#saveExcelData').on('click',function(){
 
         $.ajax({
             type: "POST",
-            url: "ws/vehiculo/addVehiculo.php",
-            data:JSON.stringify(arrayRequest),
+            url: "ws/vehiculo/Vehiculo.php",
+            data:JSON.stringify({action:"addVehicle",vehicleData:{arrayRequest}}),
             dataType: 'json',
             success: function(data){
 
@@ -593,7 +593,7 @@ $(".deleteVehiculo").on('click',function(){
             $.ajax({
                 type: "POST",
                 url: "ws/vehiculo/deleteVehiculo.php",
-                data:JSON.stringify(arrayRequest),
+                data:JSON.stringify({action:"deleteVehicle",arrayIdVehicles:{arrayRequest}}),
                 dataType: 'json',
                 success: async function(data){
                     console.log(data);

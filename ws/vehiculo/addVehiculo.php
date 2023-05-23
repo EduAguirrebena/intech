@@ -28,7 +28,6 @@
             $query = 'INSERT INTO intec.vehiculo (patente, personal_id)
                       VALUES("'.$patente.'",'.$idPersonal.')';
             $conn->mysqli->query($query);
-
         }else{
             array_push($returnErrArray,array("nombre"=>$nombre,"patente"=>$patente));
         }

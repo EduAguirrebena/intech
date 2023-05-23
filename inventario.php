@@ -384,13 +384,13 @@ $active = 'inventario';
             
             $.ajax({
                     type: "POST",
-                    url: "ws/productos/getProductos.php",
-                    data: JSON.stringify({categoria : categoria,
+                    url: "ws/productos/Producto.php",
+                    data: JSON.stringify({action:"sortProducts",
+                    requestJson:{categoria : categoria,
                                           item : item,
-                                          tipo : "categoria"}),
+                                          tipo : "categoria"}}),
                     dataType: 'json',
                     success: async function(data) {
-                        console.log(data);
                         let tr = ''
                         data.forEach(value => {
                             tr = `<tr>
@@ -424,13 +424,13 @@ $active = 'inventario';
 
             $.ajax({
                     type: "POST",
-                    url: "ws/productos/getProductos.php",
-                    data: JSON.stringify({categoria : categoria,
-                                          item : item,
-                                          tipo : "item"}),
+                    url: "ws/productos/Producto.php",
+                    data: JSON.stringify({action:"sortProducts",
+                                        requestJson:{categoria : categoria,
+                                                        item : item,
+                                                        tipo : "item"}}),
                     dataType: 'json',
                     success: async function(data){
-                        console.log(data);
                         let tr = ''
                         $('#tableProductos>tbody').empty()
                         data.forEach(value => {
@@ -673,7 +673,7 @@ $active = 'inventario';
                 $.ajax({
                     type: "POST",
                     url: "ws/productos/addProductos.php",
-                    data: JSON.stringify(arrayRequest),
+                    data: JSON.stringify({action:"addProd",jsonCreateProd:{arrayRequest}}),
                     dataType: 'json',
                     success: async function(data) {
                         $('#masivaProductoCreation').modal('hide')
