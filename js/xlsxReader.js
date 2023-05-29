@@ -142,6 +142,10 @@ async function xlsxReadandWrite(arrayHead){
                 counterErrHead ++
             }
         })
+        
+        console.log("ARRAY HEAD COMING", arrayHead.xlsxData );
+        console.log("ARRAY HEAD ", xlsxHead);
+        console.log(counterErrHead);
         if(counterErrHead == 0){
             let cell = ""
             let ifNull=""

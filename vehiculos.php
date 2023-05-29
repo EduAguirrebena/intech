@@ -4,14 +4,17 @@ require_once('./ws/bd/bd.php');
 $conn = new bd();
 $conn ->conectar();
 
-$queryVehiculos = 'SELECT v.id as "id" ,v.patente as patente , CONCAT(p.nombre," ",p.apellido) as nombre  from vehiculo v 
-                    INNER JOIN personal p ON p.id = v.id 
-                    INNER JOIN empresa e ON e.id = p.empresa_id 
-                    Where e.id = 1';
+//AFTER SET EMPRESAID WITH SESSION();
+$empresaId = 1;
 
-$queryDuenoAuto = 'SELECT CONCAT(p.nombre ," ", p.apellido) as nombre FROM personal p 
-                    INNER JOIN empresa e on e.id = p.empresa_id 
-                    where e.id = 1 GROUP BY p.nombre';
+$queryVehiculos = "SELECT v.id , v.patente, CONCAT(p.nombre,' ',p.apellido) as nombre  FROM vehiculo v 
+                    LEFT JOIN persona p ON p.id =v.persona_id 
+                    INNER JOIN empresa e on e.id  = v.empresa_id 
+                    WHERE e.id = $empresaId";
+
+// $queryDuenoAuto = 'SELECT CONCAT(p.nombre ," ", p.apellido) as nombre FROM personal p 
+//                     INNER JOIN empresa e on e.id = p.empresa_id 
+//                     where e.id = 1 GROUP BY p.nombre';
 
 
 //BUILD VEHICULOS ARRAY
@@ -25,11 +28,11 @@ if($responseBdVehiculo = $conn->mysqli->query($queryVehiculos)){
 // print_r($vehiculos);
 
 //BUILD DATA AUTODUENO
-if($responsebdDueno = $conn->mysqli->query($queryDuenoAuto)){
-    while($dataDueno = $responsebdDueno->fetch_objecT()){
-        $vehiculoAsignacion [] = $dataDueno;
-    }
-}
+// if($responsebdDueno = $conn->mysqli->query($queryDuenoAuto)){
+//     while($dataDueno = $responsebdDueno->fetch_objecT()){
+//         $vehiculoAsignacion [] = $dataDueno;
+//     }
+// }
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +42,8 @@ if($responsebdDueno = $conn->mysqli->query($queryDuenoAuto)){
     $active = 'vehiculos';
 ?>
   <body>
+
+  <p style="display: none;" class="empresaId"> <?=$empresaId?></p>
     <script src="./assets/js/initTheme.js"></script>
     <div id="app">
 
@@ -135,11 +140,6 @@ if($responsebdDueno = $conn->mysqli->query($queryDuenoAuto)){
                                         <div class="form-group">
                                         <select name="asignacion_Select" id="asignacion_Select">
                                         <option value=""></option>
-                                        <?php
-                                            foreach ($vehiculoAsignacion as $key => $value): 
-                                        ?>
-                                        <option value="<?=$value->nombre?>"><?=$value->nombre?></option>
-                                        <?php endforeach;?>
                                         </select>
                                         </div>
                                     </td>
@@ -277,6 +277,9 @@ if($responsebdDueno = $conn->mysqli->query($queryDuenoAuto)){
     
 
 <script>
+
+    const EMPRESA_ID = $('.empresaId').text();
+
 $(document).ready(function() {
     $('#tableVehiculo').DataTable( {
         fixedHeader: true
@@ -311,7 +314,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 url: "ws/vehiculo/Vehiculo.php",
-                data:JSON.stringify({action:"addVehicle",vehicleData:arrayRequest}),
+                data:JSON.stringify({action:"addVehicle",vehicleData:{arrayRequest}}),
                 dataType: 'json',
                 success: function(data){
 
@@ -516,18 +519,21 @@ $('#saveExcelData').on('click',function(){
 
         const arrayRequest = preRequest.map(function(value){
             let returnArray = {
+                "empresaId": EMPRESA_ID,
                 "patente" : value[0],
                 "nombre" : value[1]
             }
            return returnArray
         })
-
+        console.log(arrayRequest);
         $.ajax({
             type: "POST",
-            url: "ws/vehiculo/Vehiculo.php",
-            data:JSON.stringify({action:"addVehicle",vehicleData:{arrayRequest}}),
+            url: "ws/vehiculo/addVehiculo.php",
+            data:JSON.stringify(arrayRequest),
             dataType: 'json',
             success: function(data){
+
+                console.log(data);
 
                 if(data.status === 1){
                     Swal.fire({
@@ -593,7 +599,7 @@ $(".deleteVehiculo").on('click',function(){
             $.ajax({
                 type: "POST",
                 url: "ws/vehiculo/deleteVehiculo.php",
-                data:JSON.stringify({action:"deleteVehicle",arrayIdVehicles:{arrayRequest}}),
+                data:JSON.stringify({action:"deleteVehicle",arrayIdVehicles:arrayRequest}),
                 dataType: 'json',
                 success: async function(data){
                     console.log(data);

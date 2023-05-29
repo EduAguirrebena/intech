@@ -203,7 +203,7 @@
           echo '<li class="sidebar-item">';
         }
         ?>
-          <a href="pruebas2/" class="sidebar-link">
+          <a href="/proyectos2.php" class="sidebar-link">
             <i class="fa-solid fa-infinity"></i>
             <!-- <i class="bi bi-person-check"></i> -->
             <span>Pruebas</span>

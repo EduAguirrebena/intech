@@ -12,6 +12,10 @@ if ($_POST) {
             $request = $data->request;
             $result = addCliente($request);
             break;
+        case 'getCliente':
+            $request = $data->request;
+            $result = getClienteById($request);
+            break;
         default:
             $result = false;
             break;
@@ -44,6 +48,58 @@ if ($_POST) {
             }
             
         }
+    }
+    function getClientesByEmpresa($request){
+
+        $conn = new bd();
+        $conn ->conectar();
+        $clientes = [];
+        $empresaId = $request->empresaId;
+
+
+        $query = "select c.nombre as nombre_cliente ,c.id as id_cliente, df.id as id_facturacion from cliente c 
+        INNER JOIN datos_facturacion df on df.id  = c.datos_facturacion_id 
+        inner join empresa e on e.datos_facturacion_id = df.id
+        where e.id = $empresaId ";
+
+        // return $query;
+
+
+        if($responseBd = $conn->mysqli->query($query)){
+            while($dataResponse =$responseBd->fetch_object()){
+                $clientes [] = $dataResponse;
+            }
+        }else{
+            return false;
+        }
+        return $clientes;
+        
+    }
+    function getClienteById($request){
+
+        $conn = new bd();
+        $conn ->conectar();
+        $clientes = [];
+        $clienteId = $request->idCliente;
+
+
+        $query = "select c.nombre as nombre_cliente ,c.id as id_cliente, df.id as id_facturacion from cliente c 
+        INNER JOIN datos_facturacion df on df.id  = c.datos_facturacion_id 
+        inner join empresa e on e.datos_facturacion_id = df.id
+        where c.id = $clienteId ";
+
+        // return $query;
+
+
+        if($responseBd = $conn->mysqli->query($query)){
+            while($dataResponse =$responseBd->fetch_object()){
+                $clientes [] = $dataResponse;
+            }
+        }else{
+            return false;
+        }
+        return json_encode(array("cliente"=>$clientes));
+        
     }
 
 

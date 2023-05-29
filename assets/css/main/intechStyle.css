@@ -1,6 +1,23 @@
 .err{
     border: 1px solid red
 }
+.theme-dark .err{
+    border: 1px solid red
+}
+
+.theme-dark .topbar{
+  background-color: #1e1e2d;
+  border-radius:10px;
+  color: #eee;
+  font-weight: 700;
+
+} 
+
+.theme-dark #topBar-Content a{
+  color: white;
+}
+
+
 
 .dropdown-menu li{
 	position: relative;
@@ -112,17 +129,26 @@
   }
 
 
-
   .box{
-    border: 1px solid #4525d2;
-  }
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset; 
+   }
 
-  input[type=text],input[type=number] {
+  input[type=text],input[type=number],input[type=date],textarea {
    border:1px solid gray;
+   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;         
   }
 
   .form-select{
     border:1px solid gray;
+  }
+
+  .box-prod{
+    max-height: 350px;
+    overflow-x: hidden;
+  }
+
+  .addProdInput{
+    max-width: 50px;
   }
 
 
@@ -205,6 +231,96 @@
   td:hover::after {
     opacity: 1;
     visibility: visible;
+  }
+
+
+
+  .centered-spaced{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .itemName{
+    font-weight: 800;
+    font-size: 20px;
+    overflow: hidden;
+  }
+  #receiveProducto{
+    min-height: 104px;
+    margin-top: 20px;
+  }
+  .detailsProduct-box{
+    border-radius: 5%;
+    border:2px solid rgb(61 61 177 / 38%);
+    display: flex;
+  }
+  .checkitem{
+    margin: 0px 5px;
+    display: flex;
+    align-content: center;
+  }
+
+  .verticalLine{
+    min-height: 100%;
+    float: right;
+    max-width: 1px;
+    border:1px solid rgb(61 61 177 / 38%);
+    margin-left: 3px;
+  }
+  .itemDetails{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin:4px 10px;
+  }
+
+  .containerRemoveLogo{
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    display: flex;
+  }
+  .containerRemoveLogo{
+    justify-content: center;
+    display: flex;
+  }
+  .detailQuantity{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+  .logoRemove{
+    cursor: pointer;
+  }
+
+  .dragableItems{
+    max-height: 1200px;
+    overflow: scroll;
+  }
+
+  .moveProd{
+    max-height: 1000px;
+    overflow: scroll;
+  }
+  .detailsProduct-box{
+    margin-bottom: 20px;
+  }
+  #receiveProducto{
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    
+  }
+  .theme-dark #receiveProducto {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: #1e1e2d;
+    
   }
 
 

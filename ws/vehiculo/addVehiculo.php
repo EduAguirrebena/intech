@@ -8,35 +8,29 @@
     $json = file_get_contents('php://input');
     $data = json_decode($json);
 
+    
+
 
     $vehicleArray = $data;
     $returnErrArray = [];
+    $countTotal = 0;
+    $counter = 0;
 
 
     foreach ($vehicleArray as $key => $value){
 
         $patente = $value->patente;
-        $nombre = $value->nombre;
-        $query = 'select p.id from personal p 
-        where CONCAT(LOWER(p.nombre)," ",LOWER(p.apellido))="'.trim(strtolower(($nombre))).'" LIMIT 1';
-        $queryNombre = $conn->mysqli->query($query);
+        $empresaId = $value->empresaId;
         
-        if($queryNombre->num_rows > 0){
-            
-            $value = $queryNombre->fetch_object();
-            $idPersonal = $value->id;
-            $query = 'INSERT INTO intec.vehiculo (patente, personal_id)
-                      VALUES("'.$patente.'",'.$idPersonal.')';
-            $conn->mysqli->query($query);
-        }else{
-            array_push($returnErrArray,array("nombre"=>$nombre,"patente"=>$patente));
+     
+        $query = "INSERT INTO intec.vehiculo
+                (patente, IsDelete, empresa_id)
+                VALUES('".$patente."', 0, $empresaId)";
+        if($conn->mysqli->query($query)){
+            $counter++;
         }
+        $countTotal ++;
     }
 
-    if(count($returnErrArray) > 0 ){
-        echo json_encode(array("status"=>0,"array"=>$returnErrArray));
-    }else{
-        echo json_encode(array("status"=>1,"array"=>$returnErrArray));
-    }
-
+    echo json_encode(array("data"=>'Se han ingresado '.$counter.' de '.$countTotal));
 ?>

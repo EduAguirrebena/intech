@@ -17,11 +17,21 @@
         $nombre = $value ->nombre;
         $apellido = $value ->apellido;
         $rut = $value ->rut;
+        $telefono = $value->telefono;
+        $correo = $value->correo;
         $cargo = $value ->cargo;
         $especialidad = $value ->especialidad;
         $contrato = $value ->contrato;
-
+        $idPersona = 0;
         
+        $queryPersona = "INSERT INTO intec.persona
+                        (nombre, apellido, rut, email, telefono)
+                        VALUES('".$nombre." ', '".$apellido."', '".$correo."', '".$rut."', '$telefono')";
+
+
+        $resposenBdPersona = $conn->mysqli->query($queryPersona);
+        $idPersona = $conn->mysqli->insert_id;
+
         $queryCargo = $conn->mysqli->query('select id from cargo where cargo = "'.$cargo.'"'); 
         $value = $queryCargo->fetch_object();
         $idCargo = $value->id;
@@ -33,10 +43,10 @@
         $contratoq = $conn->mysqli->query('select id from tipo_contrato where contrato = "'.$contrato.'"'); 
         $value = $contratoq->fetch_object();
         $idContrato = $value->id;
-
-        $query = 'INSERT INTO intec.personal
-                (nombre, apellido,rut,cargo_id, especialidad_id, tipo_contrato_id, createAt,IsDelete, empresa_id)
-                VALUES("'.$nombre.'","'.$apellido.'","'.$rut.'",'.$idCargo.','.$idEspecialidad.','.$idContrato.','.$today.',0,1)';
+        
+        $query = "INSERT INTO intec.personal
+                (persona_id, cargo_id, especialidad_id, tipo_contrato_id, createAt, IsDelete, empresa_id)
+                VALUES(".$idPersona.",".$idCargo.",".$idEspecialidad.",".$idContrato.",'".$today."',0,1)";
 
         echo $idCargo;
         

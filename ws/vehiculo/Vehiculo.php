@@ -6,12 +6,15 @@ if ($_POST) {
     $json = file_get_contents('php://input');
     $data = json_decode($json);
     $action = $data->action;
+    $datav = $data->vehicleData;
+
+
 
     // Realiza la acción correspondiente según el valor de 'action'
     switch ($action) {
         case 'getVehiculos':
             // Recibe el parámetro empresaId
-            $empresaId = $_POST['empresaId'];
+            $empresaId = $data->empresaId;
             
             // Llama a la función getVehiculos y devuelve el resultado
             $vehiculos = getVehiculos($empresaId);
@@ -152,13 +155,14 @@ function addVehicle($vehicleData)
 {
     $conn = new bd();
     $conn->conectar();
-
-    $vehicleArray = $vehicleData;
+     
+    // return json_encode($vehicleArray); 
     $returnErrArray = [];
-    foreach ($vehicleArray as $key => $value) {
-
-        $patente = $value->patente;
-        $nombre = $value->nombre;
+    foreach ($vehicleData as $key => $value) {
+        
+        $patente = $key['patente'];
+        $nombre = $key['nombre'];
+        $empresaId = $key['empresaId'];
         $query = 'select p.id from personal p 
                 where CONCAT(LOWER(p.nombre)," ",LOWER(p.apellido))="' . trim(strtolower(($nombre))) . '" LIMIT 1';
         $queryNombre = $conn->mysqli->query($query);
@@ -167,8 +171,9 @@ function addVehicle($vehicleData)
 
             $value = $queryNombre->fetch_object();
             $idPersonal = $value->id;
-            $query = 'INSERT INTO intec.vehiculo (patente, personal_id)
-                            VALUES("' . $patente . '",' . $idPersonal . ')';
+            $query = "INSERT INTO intec.vehiculo
+                        (patente, IsDelete, empresa_id)
+                        VALUES('".$patente."', 0, $empresaId)";
             $conn->mysqli->query($query);
         } else {
             array_push($returnErrArray, array("nombre" => $nombre, "patente" => $patente));
@@ -181,3 +186,4 @@ function addVehicle($vehicleData)
         return json_encode(array("status" => 1, "array" => $returnErrArray));
     }
 }
+?>

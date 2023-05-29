@@ -26,7 +26,7 @@ $personal = getPersonal($empresaId);
 <html lang="en">
 <?php 
     require_once('./includes/head.php');
-    $active = 'vehiculos';
+    $active = 'proximosEventos';
 ?>
   <body>
     <script src="./assets/js/initTheme.js"></script>

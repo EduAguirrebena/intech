@@ -1,6 +1,6 @@
 <?php
 
-if ($_POST) {
+if ($_POST){
     require_once('../bd/bd.php');
 
     $json = file_get_contents('php://input');
@@ -16,7 +16,6 @@ if ($_POST) {
             $result = false;
             break;
     }
-
     // Devolver la respuesta como JSON
     header('Content-Type: application/json');
     echo $result;
@@ -33,8 +32,6 @@ if ($_POST) {
         $dpto = "";
         $postal_code = "";
         $comuna_id = "";
-
-        
         foreach($request as $req){
             $direccion= $req->direccion;
             $numero = $req->numero;
@@ -47,7 +44,6 @@ if ($_POST) {
         (direccion, numero,  dpto, postal_code, comuna_id, empresa_id)
         VALUES('".$direccion."', '".$numero."','".$dpto."', '".$postal_code."', $comuna_id, 1)";
 
-
         if($responseBd = $conn->mysqli->query($query)){
             $insert_id = $conn->mysqli->insert_id;
             $conn->desconectar();
@@ -56,6 +52,5 @@ if ($_POST) {
             $conn->desconectar();
             return false;
         }
-
     }
 ?>

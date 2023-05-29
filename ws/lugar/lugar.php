@@ -1,5 +1,5 @@
 <?php
-if ($_POST) {
+if ($_POST){
     require_once('../bd/bd.php');
 
     $json = file_get_contents('php://input');

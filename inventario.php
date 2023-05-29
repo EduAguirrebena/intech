@@ -15,11 +15,11 @@ $queryProductos = 'Select c.nombre , i.item, p.nombre, mo.modelo, p.precio_arrie
 
 
 
-$queryCategorias = 'select c.nombre ,c.id  from categoria c
-                    inner join categoria_has_item chi on chi.categoria_id = c.id 
-                    INNER JOIN producto p on p.categoria_has_item_id  = chi.id 
-                    where p.empresa_id = 1
-                    group by c.nombre ';
+$queryCategorias = 'select c.nombre ,c.id  from categoria c';
+                    // inner join categoria_has_item chi on chi.categoria_id = c.id 
+                    // INNER JOIN producto p on p.categoria_has_item_id  = chi.id 
+                    // where p.empresa_id = 1
+                    // group by c.nombre ';
 
 if($categoriasBdResponse = $conn->mysqli->query($queryCategorias)){
     while($dataCategorias = $categoriasBdResponse->fetch_object()){
@@ -49,13 +49,13 @@ $active = 'inventario';
 
 
         <div id="main">
-            <nav class="navbar navbar-expand-lg navbar-light">
+            <nav class="topbar navbar navbar-expand-lg navbar-light">
                 <a class="navbar-brand" href="#">Navbar</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
+                    <ul id="topBar-Content"  class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
@@ -147,103 +147,8 @@ $active = 'inventario';
             </div>
 
 
-            <!-- modal agregar personal -->
-            <div class="modal fade text-left w-100" id="xlarge" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3 class="modal-title" style="align-items: center;">
-                                Agregar Personal
-                            </h3>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <i data-feather="x"></i>
-                            </button>
-                        </div>
-                        <form action="#">
-                            <div class="modal-body">
-                                <table style="width: 100%;">
-                                    <tr>
-                                        <td>
-                                            <label>Categoria</label>
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>opcion 1</option>
-                                                    <option>opcion 2</option>
-                                                    <option>opcion 3</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label>Item</label>
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>opcion 1</option>
-                                                    <option>opcion 2</option>
-                                                    <option>opcion 3</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label>Producto</label>
-                                            <div class="form-group">
-                                                <input name="rut" type="text" placeholder="Nombre Producto" class="form-control" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label>Modelo</label>
-                                            <div class="form-group">
-                                                <input name="mail" type="text" placeholder="Modelo" class="form-control" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label>Cantidad Inicial</label>
-                                            <div class="form-group">
-                                                <input name="telefono" type="text" placeholder="cantidad" class="form-control" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label>Especialidad</label>
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>opcion 1</option>
-                                                    <option>opcion 2</option>
-                                                    <option>opcion 3</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            <label>Tipo de contrato</label>
-                                            <div class="form-group">
-                                                <select class="form-select">
-                                                    <option>opcion 1</option>
-                                                    <option>opcion 2</option>
-                                                    <option>opcion 3</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                    <i class="bx bx-x d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Close</span>
-                                </button>
-                                <input type="submit" value="Agregar" class="btn btn-info">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- end modal -->
-
+            <!-- modal agregar Producto -->
+            <?require_once('./includes/Modal/productoModal.php');?>
 
             <div class="page-content">
                 <!-- aca va la info de la pagina -->
@@ -670,86 +575,88 @@ $active = 'inventario';
                     }
                     return returnArray
                 })
+                // console.log(JSON.stringify({action:"addProd",request:{arrayRequest}}));
                 $.ajax({
                     type: "POST",
                     url: "ws/productos/addProductos.php",
-                    data: JSON.stringify({action:"addProd",jsonCreateProd:{arrayRequest}}),
+                    data: JSON.stringify(arrayRequest),
                     dataType: 'json',
                     success: async function(data) {
-                        $('#masivaProductoCreation').modal('hide')
-                        $('#excelTable>tbody').empty()
+                        console.log(data);
+                        // $('#masivaProductoCreation').modal('hide')
+                        // $('#excelTable>tbody').empty()
 
-                        let errMarcalLength = data.errMarca.length
-                        let errItemCatLength = data.errHasItem.length
-                        let sumErr = errMarcalLength + errItemCatLength
-                        let total = data.total
+                        // let errMarcalLength = data.errMarca.length
+                        // let errItemCatLength = data.errHasItem.length
+                        // let sumErr = errMarcalLength + errItemCatLength
+                        // let total = data.total
 
-                        if (sumErr === 0) {
-                            Swal.fire({
-                                icon: 'Success',
-                                title: 'Excelente',
-                                text: `Se han cargado todos los productos (${total})`
-                            })
-                        } else {
-                            let thead = $('#errTable>thead')
-                            let tbody = $('#errTable>tbody')
+                        // if (sumErr === 0) {
+                        //     Swal.fire({
+                        //         icon: 'Success',
+                        //         title: 'Excelente',
+                        //         text: `Se han cargado todos los productos (${total})`
+                        //     })
+                        // } else {
+                        //     let thead = $('#errTable>thead')
+                        //     let tbody = $('#errTable>tbody')
 
-                            let theadTh = `<tr>
-                            <th>Nombre producto</th>
-                        	<th>marca</th>
-                            <th>modelo</th>
-                            <th>categoria asociada</th>
-                            <th>item asociado</th>
-                            <th>cantidad</th>
-                            <th>precio compra</th>
-                            <th>precio estimado arriendo</th>
-                            <th>Causa de error</th></tr>`
+                        //     let theadTh = `<tr>
+                        //     <th>Nombre producto</th>
+                        // 	<th>marca</th>
+                        //     <th>modelo</th>
+                        //     <th>categoria asociada</th>
+                        //     <th>item asociado</th>
+                        //     <th>cantidad</th>
+                        //     <th>precio compra</th>
+                        //     <th>precio estimado arriendo</th>
+                        //     <th>Causa de error</th></tr>`
 
-                            thead.append(theadTh);
+                        //     thead.append(theadTh);
 
-                            let tbodyMarca;
-                            if (errMarcalLength > 0) {
+                        //     let tbodyMarca;
+                        //     if (errMarcalLength > 0) {
 
-                                data.errMarca.forEach(value => {
-                                    tbody.append(
-                                        `<tr>
-                                    <td>${value.nombre}</td>
-                                    <td>${value.marca}</td>
-                                    <td>${value.modelo}</td>
-                                    <td>${value.categoria}</td>
-                                    <td>${value.item}</td>
-                                    <td>${value.stock}</td>
-                                    <td>${value.precioCompra}</td>
-                                    <td>${value.precioArriendo}</td>
-                                    <td>La marca no existe</td>
-                                </tr>`
-                                    )
-                                });
+                        //         data.errMarca.forEach(value => {
+                        //             tbody.append(
+                        //                 `<tr>
+                        //             <td>${value.nombre}</td>
+                        //             <td>${value.marca}</td>
+                        //             <td>${value.modelo}</td>
+                        //             <td>${value.categoria}</td>
+                        //             <td>${value.item}</td>
+                        //             <td>${value.stock}</td>
+                        //             <td>${value.precioCompra}</td>
+                        //             <td>${value.precioArriendo}</td>
+                        //             <td>La marca no existe</td>
+                        //         </tr>`
+                        //             )
+                        //         });
 
 
-                            }
-                            let tbodyItem;
-                            if (errItemCatLength > 0) {
+                        //     }
+                        //     let tbodyItem;
+                        //     if (errItemCatLength > 0) {
 
-                                data.errHasItem.forEach(value => {
-                                    tbody.append(
-                                        `<tr>
-                                        <td>${value.nombre}</td>
-                                        <td>${value.marca}</td>
-                                        <td>${value.modelo}</td>
-                                        <td>${value.categoria}</td>
-                                        <td>${value.item}</td>
-                                        <td>${value.stock}</td>
-                                        <td>${value.precioCompra}</td>
-                                        <td>${value.precioArriendo}</td>
-                                        <td>Categoria / Item</td>
-                                    </tr>`
-                                    )
-                                })
+                        //         data.errHasItem.forEach(value => {
+                        //             tbody.append(
+                        //                 `<tr>
+                        //                 <td>${value.nombre}</td>
+                        //                 <td>${value.marca}</td>
+                        //                 <td>${value.modelo}</td>
+                        //                 <td>${value.categoria}</td>
+                        //                 <td>${value.item}</td>
+                        //                 <td>${value.stock}</td>
+                        //                 <td>${value.precioCompra}</td>
+                        //                 <td>${value.precioArriendo}</td>
+                        //                 <td>Categoria / Item</td>
+                        //             </tr>`
+                        //             )
+                        //         })
 
-                            }
-                            $('#modalErrMasiva').modal('show')
-                        }
+                        //     }
+                        //     $('#modalErrMasiva').modal('show')
+                        // }
                     },
                     error: function(data) {
                         console.log(data.responseText);

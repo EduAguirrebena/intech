@@ -10,9 +10,9 @@
                 <div class="col-6 ">
                     <ul id="sortable1" class="connectedSortable" style="min-height: 150px;">
                         <?php
-                        foreach ($vehiculos as $key => $value) {
-                            echo "<li class=" . $value->id . ">" . $value->patente . "</li>";
-                        }
+                        // foreach ($vehiculos as $key => $value) {
+                        //     echo "<li class=" . $value->id . ">" . $value->patente . "</li>";
+                        // }
                         ?>
                     </ul>
                 </div>
