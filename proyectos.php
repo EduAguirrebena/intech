@@ -19,6 +19,10 @@ $regiones = getRegiones();
 $proyectos = getMyProjects($empresaId);
 $personal = getPersonal($empresaId);
 
+// var_dump($vehiculos); echo "<br>";
+// var_dump($regiones); echo "<br>";
+// var_dump($proyectos); echo "<br>";
+// var_dump($personal); echo "<br>";
 
 ?>
 
@@ -70,14 +74,15 @@ $personal = getPersonal($empresaId);
                                 <tbody>
                                     <?php 
                                         foreach($proyectos as $proyecto){
+                                            // print_r($proyecto); echo "<br>";
                                             echo '<tr>';
                                                 echo '<td class="idProject" align=center>'.$proyecto->id.'</td>';
                                                 echo '<td align=center>'.$proyecto->nombre_proyecto.'</td>';
-                                                echo '<td align=center>'.$proyecto->nombre.'</td>';
-                                                echo '<td align=center>'.$proyecto->direccion.'</td>';
-                                                echo '<td align=center>'.$proyecto->fecha_inicio.'</td>';
-                                                echo '<td align=center>'.$proyecto->fecha_termino.'</td>';
-                                                echo '<td data-tooltip="Ver detalles" align=center><i style="cursor:pointer;" class="fa-solid fa-eye openDetalleModal"></i></td>';
+                                                echo '<td align=center></td>';
+                                                echo '<td align=center></td>';
+                                                echo '<td align=center></td>';
+                                                echo '<td align=center></td>';
+                                                echo '<td data-tooltip="Detalles" align=center><i style="cursor:pointer;" class="fa-solid fa-eye openDetalleModal"></i></td>';
                                             echo '</tr>';
                                         }
                                     ?>
@@ -129,7 +134,7 @@ $(document).ready(function() {
 $('.openDetalleModal').on('click',function(){
 
     let projectId = $(this).closest('tr').find('.idProject').text()
-    console.log(projectId);
+    console.log("idproject",projectId);
 
     $('#proyectosModal').modal('show');
 
@@ -148,12 +153,13 @@ $('.openDetalleModal').on('click',function(){
         success: function(response){
             console.log(response);
             response.dataProject.forEach(data => {
-                console.log(data.nombre_cliente);
+                console.log(data);
 
-                $('#inputProjectName').val(data.proyecto)
+                $('#inputProjectName').val(data.nombre_proyecto)
                 $('#fechaInicio').val(data.fecha_inicio)
                 $('#fechaTermino').val(data.fecha_termino)
-                $('#direccionInput').val(data.direccion+' '+data.numero+' '+data.dpto+', '+data.comuna+', '+data.region)
+                $('#direccionInput').val('')
+                // $('#direccionInput').val(data.direccion+' '+data.numero+' '+data.dpto+', '+data.comuna+', '+data.region)
                 $('#inputNombreCliente').val(data.nombre_cliente)
                 $('#commentProjectArea').val(data.comentarios)
 

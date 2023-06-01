@@ -117,20 +117,21 @@ if ($_POST){
                                         where pro.id =  $idProject";
             }
         
-            $query = "SELECT p.nombre_proyecto as proyecto, p.fecha_inicio,
-                    p.fecha_termino,d.direccion ,d.numero, d.dpto,co.comuna,
-                    r.region,c.nombre as nombre_cliente, v.patente, p.comentarios
+            $query = "SELECT p.*
+                    -- p.nombre_proyecto as proyecto, p.fecha_inicio,
+                    -- p.fecha_termino,d.direccion ,d.numero, d.dpto,co.comuna,
+                    -- r.region,c.nombre as nombre_cliente, v.patente, p.comentarios
                     FROM proyecto p 
-                    INNER JOIN cliente c on c.id = p.cliente_id 
-                    INNER JOIN empresa e on e.id = p.empresa_id 
-                    LEFT JOIN gastos g on g.id = p.gastos_id 
-                    INNER JOIN lugar l on l.id = p.lugar_id 
-                    INNER JOIN direccion d on d.id  = l.direccion_id 
-                    LEFT JOIN arriendos a on a.id  = p.arriendos_id 
-                    INNER JOIN comuna co on co.id =d.comuna_id 
-                    INNER JOIN region r on r.id  = co.region_id 
-                    LEFT JOIN proyecto_has_vehiculo phv ON phv.proyecto_id =p.id 
-                    LEFT JOIN vehiculo v on v.id = phv.vehiculo_id 
+                    -- INNER JOIN cliente c on c.id = p.cliente_id 
+                    -- INNER JOIN empresa e on e.id = p.empresa_id 
+                    -- LEFT JOIN gastos g on g.id = p.gastos_id 
+                    -- INNER JOIN lugar l on l.id = p.lugar_id 
+                    -- INNER JOIN direccion d on d.id  = l.direccion_id 
+                    -- LEFT JOIN arriendos a on a.id  = p.arriendos_id 
+                    -- INNER JOIN comuna co on co.id =d.comuna_id 
+                    -- INNER JOIN region r on r.id  = co.region_id 
+                    -- LEFT JOIN proyecto_has_vehiculo phv ON phv.proyecto_id =p.id 
+                    -- LEFT JOIN vehiculo v on v.id = phv.vehiculo_id 
                     WHERE p.id = $idProject";
         
             if($responseBd = $conn->mysqli->query($query)){
@@ -159,18 +160,22 @@ if ($_POST){
             $conn->conectar();
 
             $projects=[];
-            $queryProyectos = "SELECT p.id, p.nombre_proyecto,p.empresa_id,c.nombre, 
-                CONCAT(d.direccion,' ',d.numero,', ',co.comuna,', ',r.region) AS direccion,
-                p.fecha_inicio,
-                p.fecha_termino,
-                p.comentarios 
+            // $queryProyectos = "SELECT p.id, p.nombre_proyecto,p.empresa_id,c.nombre, 
+            //     CONCAT(d.direccion,' ',d.numero,', ',co.comuna,', ',r.region) AS direccion,
+            //     p.fecha_inicio,
+            //     p.fecha_termino,
+            //     p.comentarios 
+            //     FROM proyecto p 
+            //     INNER JOIN lugar l ON l.id = p.lugar_id 
+            //     INNER JOIN cliente c ON c.id = p.cliente_id 
+            //     INNER JOIN empresa e ON e.id = p.empresa_id 
+            //     INNER JOIN direccion d ON d.id  = l.direccion_id 
+            //     INNER JOIN comuna co ON co.id = d.comuna_id  
+            //     INNER JOIN region r ON r.id = co.region_id 
+            //     Where e.id = $empresa_id";
+            $queryProyectos = "SELECT p.*
                 FROM proyecto p 
-                INNER JOIN lugar l ON l.id = p.lugar_id 
-                INNER JOIN cliente c ON c.id = p.cliente_id 
                 INNER JOIN empresa e ON e.id = p.empresa_id 
-                INNER JOIN direccion d ON d.id  = l.direccion_id 
-                INNER JOIN comuna co ON co.id = d.comuna_id  
-                INNER JOIN region r ON r.id = co.region_id 
                 Where e.id = $empresa_id";
             if($responseBd = $conn->mysqli->query($queryProyectos)){
                 while($dataProject = $responseBd->fetch_object()){
