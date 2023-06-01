@@ -29,8 +29,9 @@ $active = 'proximosEventos';
 ?>
 
 <body>
-  <p style="display: none;" id="empresaId"><?= $empresaId ?></p>
-  <script src="./assets/js/initTheme.js"></script>
+<?php require_once('./includes/Constantes/empresaId.php')?>  
+
+<script src="./assets/js/initTheme.js"></script>
   <div id="app">
 
     <?php require_once('./includes/sidebar.php') ?>
@@ -221,208 +222,43 @@ $active = 'proximosEventos';
   <!-- FIN require Modal -->
   <?php require_once('./includes/footerScriptsJs.php') ?>
 
+  <!-- REQUIRE DE FUNCIONES JS -->
+  <script src="/js/Funciones/NewProject.js"></script>
+
 </body>
 
 <script>
-function AddDivProduct(productName, productPrice,productId,quantity){
-  $('#tbodyReceive').append(`<div class="detailsProduct-box">
-                <div class="checkitem">
-                  <input type="checkbox">
-                  <span class="verticalLine"></span>
-                </div>
-                <div class="itemProperties">
-                  <p class="itemId" style="display:none">${productId}</p>
-                  <div class="itemName"> 
-                    <p>${productName}</p>
-                    <hr/>
-                  </div>
-                  <div class="itemPrice">
-                    <p class="getPrice" style="display:none">${productPrice}</p>
-                    <p  style="font-size: 15px; font-weight: 700;">Precio arriendo: ${productPrice}</p>
-                    <hr/>
-                  </div>
-                  <div class="itemDetails">
-                      <div class="detailQuantity">
-                        <p>Cantidad</p>
-                        <input type="number" class="addProdInput" min="1" max="" value="${quantity}"/>
-                      </div>
-                      <div class="containerRemoveLogo">
-                        <p style="visibility: hidden;">CANT</p>
-                        <i class="fa-solid fa-trash logoRemove" style="color:red;font-size: 30px;"></i>
-                      </div>
-                  </div>
-                </div>
-              </div>`);
+
 
   
-}
-
-  async function addLugar(lugarRequest) {
-    return $.ajax({
-      type: "POST",
-      url: 'ws/lugar/lugar.php',
-      data: JSON.stringify({
-        request: lugarRequest,
-        action: "addLugar"
-      }),
-      dataType: 'json',
-      success: function(data) {
-        let id_lugar = data.id_lugar;
-        console.log("LUGAR", data);
-      },
-      error: function(response) {
-        console.log(response);
-      }
-    })
-  }
-  
-  async function addDir(dirRequest) {
-    return $.ajax({
-      type: "POST",
-      url: 'ws/direccion/direccion.php',
-      data: JSON.stringify({
-        request: dirRequest,
-        action: "addDireccion"
-      }),
-      dataType: 'json',
-      success: function(data) {
-
-        id_direccion = data.id_direccion;
-        console.log("DIRECCION", data);
-
-
-      },
-      error: function(response) {
-
-      }
-    })
-  }
-  async function addCliente(clienteRequest) {
-    return $.ajax({
-      type: "POST",
-      url: 'ws/cliente/cliente.php',
-      data: JSON.stringify({
-        request: {
-          clienteRequest
-        },
-        tipo: "addCliente"
-      }),
-      dataType: 'json',
-      success: function(data) {
-        idCliente = data.idCliente
-        console.log("CLIENTE", data);
-      },
-      error: function(response) {
-        console.log(response.responseText);
-      }
-    })
-  }
-
-  async function createProject(requestProject) {
-    return $.ajax({
-      type: "POST",
-      url: 'ws/proyecto/proyecto.php',
-      data: JSON.stringify({
-        request: {
-          requestProject
-        },
-        action: "addProject"
-      }),
-      dataType: 'json',
-      success: function(data) {
-        console.log("RESPONSE PROYECTO", data);
-      },
-      error: function(response) {
-        console.log(response.responseText);
-      }
-    })
-  }
-
-  async function assignvehicleToProject(requestasssign) {
-    return $.ajax({
-      type: "POST",
-      url: 'ws/vehiculo/Vehiculo.php',
-      data: JSON.stringify({
-        request: requestasssign,
-        action: "addVehicleToProject"
-      }),
-      dataType: 'json',
-      success: function(data) {
-
-        console.log("RESPONSE AGIGNACION VEHICULO", data);
-
-      },
-      error: function(response) {
-        console.log(response.responseText);
-      }
-    })
-  }
-
-  async function assignPersonal(requestasssign) {
-    try {
-      return $.ajax({
-        type: "POST",
-        url: 'ws/personal/Personal.php',
-        data: JSON.stringify({
-          request: requestasssign,
-          action: "addPersonalToProject"
-        }),
-        dataType: 'json',
-        success: function(data) {
-
-          console.log("RESPONSE AGIGNACION PERSONAL", data);
-
-        },
-        error: function(response) {
-          console.log(response.responseText);
-        }
-      })
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-
-  async function assignProduct(requestAssignFunction) {
-    try {
-      return $.ajax({
-        type: "POST",
-        url: 'ws/productos/Producto.php',
-        data: JSON.stringify({
-          request: requestAssignFunction,
-          action: "assignProductToProject"
-        }),
-        dataType: 'json',
-        success: function(data) {
-
-          console.log("RESPONSE AGIGNACION PRODUCTOS", data);
-
-        },
-        error: function(response) {
-          console.log(response.responseText);
-        }
-      })
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   //BOTON DE TEST
   $('#verarray').on('click', function() {
 
-    let arrayProducts = []
-      $('.detailsProduct-box').each(function() {
-          let idProject = $(this).find('.itemId').text();
-          let productPrice = $(this).find('.getPrice').text();
-          let productQuantity = $(this).find('.addProdInput').val();
-          arrayProducts.push({
-            idProduct: idProject,
-            price: productPrice,
-            quantity:productQuantity
-          })
-      })
+    let arrayVehiclesID = []
 
-      console.log(arrayProducts);
+    $('#sortable2 > li').each(function() {
+          
+          let vClass = $(this).attr('class')[0]
+          console.log(vClass)
+          arrayVehiclesID.push({
+            idVehiculo: vClass
+          })
+        })
+
+      console.log(arrayVehiclesID);
+
+    //   $('.detailsProduct-box').each(function() {
+    //       let idProject = $(this).find('.itemId').text();
+    //       let productPrice = $(this).find('.getPrice').text();
+    //       let productQuantity = $(this).find('.addProdInput').val();
+    //       arrayProducts.push({
+    //         idProduct: idProject,
+    //         price: productPrice,
+    //         quantity:productQuantity
+    //       })
+    //   })
+
 
   })
   //FIN BOTON TEST
@@ -453,7 +289,7 @@ function AddDivProduct(productName, productPrice,productId,quantity){
         dataType:'json',
         data:JSON.stringify({"action":"getVehiculos",empresaId:EMPRESA_ID}),
         success:function(response){
-          console.log("response",response);
+          console.log("vehiculos",response);
 
           response.forEach(vehiculo => {
             let li = `<li class="${vehiculo.id}">${vehiculo.patente}</li>`
@@ -601,10 +437,10 @@ function AddDivProduct(productName, productPrice,productId,quantity){
           required: true
         },
         dpInicio: {
-          required: true
+          required: false
         },
         dpTermino: {
-          required: true
+          required: false
         },
         txtDir: {},
         txtCliente: {}
@@ -628,6 +464,12 @@ function AddDivProduct(productName, productPrice,productId,quantity){
       },
       submitHandler: async function() {
         event.preventDefault()
+
+        //DATOS PROYECTO
+        let projectName = $('#inputProjectName').val();
+        let fechaInicio = $('#fechaInicio').val();
+        let fechaTermino = $('#fechaTermino').val();
+        let comentarios = $('#commentProjectArea').val()
 
         //CREAR CLIENTE PARA PROYECTO
         let idCliente;
@@ -656,27 +498,38 @@ function AddDivProduct(productName, productPrice,productId,quantity){
           codigo_postal: postal_code,
           comuna: comuna
         }]
+        if($('#direccionInput').val() !== ""){
+          const resultDireccion = await Promise.all([addDir(requestDir), addCliente(requestCliente)])
+          id_direccion = resultDireccion[0].id_direccion
+        }
+        if($('#inputNombreCliente').val() !== ""){
+          const resultCliente = await Promise.all([addDir(requestDir), addCliente(requestCliente)])
+          idCliente = resultCliente[0].idCliente
 
-        const resultDireccion = await Promise.all([addDir(requestDir), addCliente(requestCliente)])
-        id_direccion = resultDireccion[0].id_direccion
-        idCliente = resultDireccion[1].idCliente
+            let lugarRequest = [{
+            lugar: dir,
+            direccion_id: id_direccion
+            }]
 
+          // DATOS PARA LA CRECION BASE DE UN PROYECTO
+          
+          let direccion = $('#direccionInput').val();
+          let nombreCliente = $('#inputNombreCliente').val();
+
+          const responseLugar = await Promise.all([addLugar(lugarRequest)])
+          id_lugar = responseLugar[0].id_lugar
+        }
+
+        
         //REQUEST LUGAR
-        let lugarRequest = [{
-          lugar: dir,
-          direccion_id: id_direccion
-        }]
+        if($('#inputNombreCliente').val() === ""){
+          idCliente = "";
+        }
+        if($('#direccionInput').val() === ""){
+          id_direccion = "";
+          id_lugar = "";
+        }
 
-        // DATOS PARA LA CRECION BASE DE UN PROYECTO
-        let projectName = $('#inputProjectName').val();
-        let fechaInicio = $('#fechaInicio').val();
-        let fechaTermino = $('#fechaTermino').val();
-        let direccion = $('#direccionInput').val();
-        let nombreCliente = $('#inputNombreCliente').val();
-        let comentarios = $('#commentProjectArea').val()
-
-        const responseLugar = await Promise.all([addLugar(lugarRequest)])
-        id_lugar = responseLugar[0].id_lugar
 
         let requestProject = {
           nombre_proyecto: projectName,
@@ -687,6 +540,7 @@ function AddDivProduct(productName, productPrice,productId,quantity){
           comentarios: comentarios
           // empresa_id:1
         }
+        console.log(requestProject);
 
         const responseProject = await Promise.all([createProject(requestProject)])
         idProject = responseProject[0].id_project;
@@ -694,7 +548,9 @@ function AddDivProduct(productName, productPrice,productId,quantity){
 
         let arrayVehiclesID = []
         $('#sortable2 > li').each(function() {
+          
           let vClass = $(this).attr('class')
+          console.log(vClass)
           arrayVehiclesID.push({
             idVehiculo: vClass
           })

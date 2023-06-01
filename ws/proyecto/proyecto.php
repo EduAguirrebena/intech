@@ -48,10 +48,31 @@ if ($_POST){
                $comentarios = $req->comentarios;
                // $empresa_id = $req->empresa_id;
             }
-       
+
+
+                if($lugar_id === ""){
+                   $lugar_id = "null";
+                }else{
+                    $lugar_id = "'".$lugar_id."'";
+                }
+                if($cliente_id === ""){
+                    $cliente_id = "null";
+                }else{
+                    $cliente_id = "'".$cliente_id."'";
+                }       
+                if($fecha_inicio === ""){
+                   $fecha_inicio = "null";
+                }else{
+                    $fecha_inicio = "'".$fecha_inicio."'";
+                }
+                if($fecha_termino === ""){
+                    $fecha_termino = "null";
+                }else{
+                    $fecha_termino = "'".$fecha_termino."'";
+                }       
             $query = "INSERT INTO intec.proyecto
             (nombre_proyecto, lugar_id, fecha_inicio, fecha_termino, createAt, IsDelete , cliente_id, empresa_id,comentarios)
-            VALUES('".$nombre_proyecto."', $lugar_id, '".$fecha_inicio."', '".$fecha_termino."', '".$today."', 0, $cliente_id, 1,'".$comentarios."')";
+            VALUES('".$nombre_proyecto."', $lugar_id,$fecha_inicio, $fecha_termino,'".$today."', 0, $cliente_id, 1,'".$comentarios."')";
        
            if($conn->mysqli->query($query)){
                 $id_project = $conn->mysqli->insert_id;

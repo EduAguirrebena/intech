@@ -33,6 +33,7 @@ $personal = getPersonal($empresaId);
     <div id="app">
 
         <?php require_once('./includes/sidebar.php') ?>
+        <?php  require_once('./includes/Constantes/empresaId.php')?>
 
       <div id="main">
         <header class="mb-3">

@@ -6,7 +6,10 @@ if ($_POST) {
     $json = file_get_contents('php://input');
     $data = json_decode($json);
     $action = $data->action;
-    $datav = $data->vehicleData;
+    
+    if(isset($data->vehicleData)){
+        $datav = $data->vehicleData;
+    }
 
 
 
@@ -72,10 +75,10 @@ function getVehiculos($empresaId)
     $conn = new bd();
     $conn->conectar();
     $vehiculos = [];
-    $queryVehiculos = "SELECT v.id ,v.patente ,v.personal_id  FROM vehiculo v
-                                INNER JOIN personal p on p.id = v.personal_id 
-                                INNER JOIN empresa e on e.id = p.empresa_id 
-                                WHERE e.id = $empresaId";
+    $queryVehiculos = "select v.id, v.patente from vehiculo v 
+                        LEFT JOIN persona p on p.id = v.persona_id 
+                        inner join empresa e on e.id = v.empresa_id 
+                        where e.id = $empresaId and v.IsDelete = 0";
 
     if ($responseBdVehiculos = $conn->mysqli->query($queryVehiculos)) {
         while ($dataVehiculos = $responseBdVehiculos->fetch_object()) {

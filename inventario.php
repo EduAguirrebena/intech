@@ -336,6 +336,7 @@ $active = 'inventario';
                                                         tipo : "item"}}),
                     dataType: 'json',
                     success: async function(data){
+                        console.log(data);
                         let tr = ''
                         $('#tableProductos>tbody').empty()
                         data.forEach(value => {

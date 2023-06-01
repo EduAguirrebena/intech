@@ -11,10 +11,12 @@ $today = date('Y-m-d');
 $jsonErrMarca = [];
 $jsonErrItemHasClass = [];
 $err = false;
-
+$resposePush = [];
+set_time_limit(300); 
 
 foreach ($productoArr as $key => $value) {
 
+    
     $err = false;
     $nombre = $value->nombre;
     $marca = $value->marca;
@@ -27,37 +29,10 @@ foreach ($productoArr as $key => $value) {
     $itemId = "";
     $catId = "";
 
-    $queryIdMarca = $conn->mysqli->query("Select m.id  from marca m where LOWER(m.marca) ='" . strtolower($marca) . "'");
 
-    $qItem = $conn->mysqli->query("select item from item where item= '" . $item . "' limit 1");
-    if ($qItem->num_rows === 0) {
-        $queryCreateItem = "INSERT INTO intec.item(item, createAt, IsDelete)VALUES('" . $item . "','" . $today . "',0)";
-        $conn->mysqli->query($queryCreateItem);
-        $itemId = $conn->mysqli->insert_id;
-    } else {
-        $queryGetIdCat = "select id as idItem from item where LOWER(item) = '" . strtolower($item) . "' limit 1";
-        $response = $conn->mysqli->query($queryGetIdCat);
-        $dataItem =  $response->fetch_object();
-        $itemId = $dataItem->idItem;
-    }
-    $qCat = $conn->mysqli->query("select nombre from categoria where LOWER(nombre)= '" . strtolower($categoria) . "' limit 1");
-    if ($qCat->num_rows === 0) {
-        $queryCreateCategoria = "INSERT INTO intec.categoria(nombre, createAt, IsDelete)VALUES('" . $categoria . "','" . $today . "',0)";
-        $conn->mysqli->query($queryCreateCategoria);
-        $catId =  $conn->mysqli->insert_id;
-    } else {
-        $queryGetIdCat = "select id as idCategoria from categoria where LOWER(nombre) = '" . strtolower($categoria) . "' limit 1";
-        $response = $conn->mysqli->query($queryGetIdCat);
-        $dataItem =  $response->fetch_object();
-        $catId = $dataItem->idCategoria;
-    }
-    $queryhasexist = "SELECT * FROM categoria_has_item chi where chi.categoria_id = $catId and chi.item_id = $itemId";
+    $queryIdMarca = $conn->mysqli->query("Select id  from marca where LOWER(marca) ='generico'");
 
-    $qhe = $conn->mysqli->query($queryhasexist);
-    // echo $queryhasexist ;
-    if ($qhe->num_rows === 0) {
-        $conn->mysqli->query("INSERT INTO intec.categoria_has_item(categoria_id, item_id)VALUES($catId, $itemId)");
-    }
+   
     if ($queryIdMarca->num_rows === 0) {
 
         array_push($jsonErrMarca, array(

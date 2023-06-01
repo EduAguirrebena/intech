@@ -18,7 +18,7 @@ if ($_POST) {
             
             // Llama a la función sortProducts y devuelve el resultado
             $sortedProducts = sortProducts($requestJson);
-            echo $sortedProducts;
+            echo json_encode($sortedProducts);
             break;
         
         case 'getProductos':
@@ -99,7 +99,7 @@ if ($_POST) {
         if(count($productos)===0){
             return $productos;
         }
-        return json_encode($productos);
+        return $productos;
     }
 
 

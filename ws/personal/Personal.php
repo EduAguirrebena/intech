@@ -39,11 +39,14 @@ function getPersonal($empresaId)
     $conn = new bd();
     $conn->conectar();
     $personal =  [];
-    $queryPersonal = "SELECT  p.id, CONCAT(p.nombre,' ',p.apellido) as nombre, c.cargo, es.especialidad  from personal p 
-                        INNER JOIN especialidad es on es.id  = p.especialidad_id 
-                        INNER JOIN cargo c ON c.id = p.cargo_id 
-                        INNER JOIN empresa e on e.id = p.empresa_id 
-                        where e.id = $empresaId";
+    $queryPersonal = "SELECT  p.id, p.cargo_id, CONCAT(per.nombre ,' ',per.apellido) as nombre,
+                            c.cargo, e.especialidad  
+                        FROM personal p
+                        INNER JOIN  persona per on per.id = p.persona_id 
+                        INNER JOIN cargo c on c.id  = p.cargo_id 
+                        INNER JOIN especialidad e on e.id  = p.especialidad_id 
+                        INNER JOIN empresa emp on emp.id = p.empresa_id 
+                        where emp.id = $empresaId";
 
     if ($responseBd = $conn->mysqli->query($queryPersonal)) {
         while ($dataPersonal = $responseBd->fetch_object()) {
