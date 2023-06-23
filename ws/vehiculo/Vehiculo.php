@@ -24,6 +24,14 @@ if ($_POST) {
             echo json_encode($vehiculos);
             break;
         
+        case 'getAvailableVehiculos':
+            // Recibe el parámetro empresaId
+            $request = $data->request->arrayRequest;
+            // Llama a la función getAvailableVehiculos y devuelve el resultado
+            $vehiculos = getAvailableVehiculos($request);
+            echo json_encode($vehiculos);
+            break;
+        
         case 'addVehicleToProject':
             // Recibe el parámetro request
             $request = $data->request;
@@ -31,6 +39,14 @@ if ($_POST) {
             // Llama a la función addtoProject y devuelve el resultado
             $response = addVehicleToProject($request);
             echo json_encode($response);
+            break;
+        
+        case 'dropAssigmentVehicles':
+            // Recibe el parámetro request
+            $idProject = $data->idProject;
+            // Llama a la función addtoProject y devuelve el resultado
+            $deleteIds = dropAssigmentVehicles($idProject);
+            echo json_encode($deleteIds);
             break;
         
         case 'getAssigned':
@@ -89,14 +105,55 @@ function getVehiculos($empresaId)
     return $vehiculos;
 }
 
+function getAvailableVehiculos($request)
+{
+    $conn = new bd();
+    $conn->conectar();
+    $vehiculos = [];
+
+    foreach($request as $req){
+        $empresaId = $req->empresaId;
+        $fechaInicio = $req->fechaInicio;
+        $fechaTermino = $req->fechaTermino;
+    }
+
+    $queryVehiculos = "SELECT v.id,v.patente FROM vehiculo v
+                        LEFT JOIN proyecto_has_vehiculo phv on phv.vehiculo_id = v.id
+                        LEFT  JOIN proyecto p on p.id = phv.proyecto_id
+                        where p.id IS NULL 
+                        or '".$fechaInicio."' < p.fecha_inicio and '".$fechaTermino."' < p.fecha_inicio 
+                        or '".$fechaInicio."' > p.fecha_termino and '".$fechaTermino."' > p.fecha_termino
+                        and p.empresa_id = $empresaId";
+
+    if ($responseBdVehiculos = $conn->mysqli->query($queryVehiculos)) {
+        while ($dataVehiculos = $responseBdVehiculos->fetch_object()) {
+            $vehiculos[] = $dataVehiculos;
+        }
+    }
+    $conn->desconectar();
+    return $vehiculos;
+}
+
 function addVehicleToProject($request)
 {
     $conn = new bd();
     $conn->conectar();
     $arrayResponse = [];
+    $idProject = 0;
+    
+    foreach (array_slice($request, 0, 1) as $req) {
+        $idProject = $req->idProject;
+    }
+
+    $queryIfAssigned = "SELECT * from proyecto_has_vehiculo phv where phv.proyecto_id =$idProject";
+
+    if($conn->mysqli->query($queryIfAssigned)->num_rows>0){
+        $qdelete = "DELETE FROM proyecto_has_vehiculo WHERE proyecto_id =$idProject";
+        $conn->mysqli->query($qdelete);
+    }
+
     foreach ($request as $req) {
 
-        $idProject = $req->idProject;
         $idVehicle = $req->idVehicle;
         $query = "INSERT INTO intec.proyecto_has_vehiculo
                 (proyecto_id, vehiculo_id)
@@ -109,6 +166,19 @@ function addVehicleToProject($request)
     }
     $conn->desconectar();
     return $arrayResponse;
+}
+
+function dropAssigmentVehicles($idProject){
+    $conn = new bd();
+    $conn->conectar();
+    $queryIfAssigned = "SELECT * from proyecto_has_vehiculo phv where phv.proyecto_id =$idProject";
+
+    if($conn->mysqli->query($queryIfAssigned)->num_rows>0){
+        $qdelete = "DELETE FROM proyecto_has_vehiculo WHERE proyecto_id =$idProject";
+        $conn->mysqli->query($qdelete);
+    }
+
+    return $conn->mysqli->affected_rows;
 }
 
 function getAssigned($empresaId)
@@ -129,6 +199,8 @@ function getAssigned($empresaId)
     $conn->desconectar();
     return $vehiculos;
 }
+
+
 
 
 function deleteVehicle($arrayIdVehicles)

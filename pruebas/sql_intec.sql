@@ -775,3 +775,32 @@ CREATE TABLE IF NOT EXISTS `intec`.`proyecto_has_estado` (
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+
+
+
+
+
+(14,'RegiÃ³n de Los RÃ­os',1"14",14,1),
+(13,'RegiÃ³n Metropolitana',1"13",13,1),
+(12,'RegiÃ³n de Magallanes y la AntÃ¡rtica Chilena',1"12",12,1),
+(11,'RegiÃ³n de AysÃ©n del General Carlos IbÃ¡Ã±ez del Campo',1"11",11,1),
+(10,'RegiÃ³n de Los Lagos',1"10",10,1),
+(9,'RegiÃ³n de la AraucanÃ­a',"9",9,1),
+(8,'RegiÃ³n del BÃ­o-BÃ­o',"8",8,1),
+(7,'RegiÃ³n del Maule',"7",7,1),
+(6,'RegiÃ³n del Libertador General Bernardo O Higgins',"6",6,1),
+(5,'RegiÃ³n de Valparaiso',"5",5,1),
+(4,'RegiÃ³n de Coquimbo',"4",4,1),
+(3,'RegiÃ³n de Atacama',"3",3,1),
+(2,'RegiÃ³n de Antofagasta',"2",2,1),
+(1,'RegiÃ³n de TarapacÃ¡',"1",1,1),
+(15,'RegiÃ³n de Arica y Parinacota',1"15",15,1);
+
+
+
+
+
+

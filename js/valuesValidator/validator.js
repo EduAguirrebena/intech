@@ -37,3 +37,31 @@ function maxLength(value,max){
     }
 
 }
+
+function capitalizeFirstLetter(str) {
+
+    const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+
+    return capitalized;
+}
+
+function CLPFormatter(value){
+
+    let CLPFormat = new Intl.NumberFormat('es-CL', {
+        style: 'currency',
+        currency: 'CLP',
+    });
+    return CLPFormat.format(value);
+}
+
+function ClpUnformatter(value){
+    console.log("VALUE UNFORMATTER",value);
+    let newValue = value
+    .replaceAll("$", "")
+    .replaceAll(".", "");
+
+    return newValue;
+}
+
+
+

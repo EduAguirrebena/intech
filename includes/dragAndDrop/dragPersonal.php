@@ -6,14 +6,14 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="serachInputDrag">
+                <label for="searchInputPersonal">Búscar Personal: </label>
+                <input type="text" name="" oninput="searchPersonalDrag()" id="searchInputPersonal">
+            </div>
             <div class="row">
                 <div class="col-6 ">
                     <ul id="sortablePersonal1" class="connectedSortablePersonal" style="min-height: 150px;">
-                        <?php
-                        foreach ($personal as $key => $value) {
-                            echo "<li class=". $value->id." >" . $value->nombre." ".$value->cargo." ".$value->especialidad."</li>";
-                        }
-                        ?>
+                        
                     </ul>
                 </div>
                 <div class="col-6">

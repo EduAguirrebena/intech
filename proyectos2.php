@@ -1,23 +1,30 @@
 <?php
 
-require_once('./ws/pais_region_comuna/Comuna.php');
-require_once('./ws/vehiculo/Vehiculo.php');
-require_once('./ws/personal/Personal.php');
-require_once('./ws/productos/Producto.php');
-require_once('./ws/pais_region_comuna/Region.php');
-require_once('./ws/cliente/cliente.php');
+// require_once('./ws/pais_region_comuna/Comuna.php');
+// require_once('./ws/vehiculo/Vehiculo.php');
+// require_once('./ws/personal/Personal.php');
+// require_once('./ws/productos/Producto.php');
+// require_once('./ws/pais_region_comuna/Region.php');
+// require_once('./ws/cliente/cliente.php');
 
 $empresaId = 1;
 
 // $obj = (object) array('idRegion' => 1);
 // $comunas = getComunasByRegion($obj);
-$vehiculos = getVehiculos($empresaId);
-$personal =  getPersonal($empresaId);
-$productos = getProductos($empresaId);
-$regiones = getRegiones();
+// $vehiculos = getVehiculos($empresaId);
+// $personal =  getPersonal($empresaId);
+// $productos = getProductos($empresaId);
+// $regiones = getRegiones();
 
 $requestClientes = (object) array('empresaId' => 1);
-$clientes = getClientesByEmpresa($requestClientes);
+// $clientes = getClientesByEmpresa($requestClientes);
+$clientes = [];
+
+
+$vehiculos = [];
+$personal = [];
+$productos = [];
+$regiones = [];
 
 
 ?>
@@ -89,45 +96,6 @@ $active = 'proximosEventos';
                     <div class="card-body">
                         <div class="form-group">
                             <div class="mt-2">
-                                <form id="clienteForm">
-
-                                    <div class="row centered-spaced">
-                                        <div class="col-md-5 col-12">
-                                            <label for="selectProjectClient">Clientes</label>
-                                            <select class="form-select" id="clienteSelect" name="selectCliente">
-                                                <option value=""></option>
-                                                <option value="new" style="background-color: green;color: white;font-weight: 700; ">Nuevo Cliente <p><i class="fa-solid fa-plus"></i></p>
-                                                </option>
-                                                <?php foreach ($clientes as $cliente) : ?>
-                                                    <option value="<?= $cliente->id_cliente ?>"><?= $cliente->nombre_cliente ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 col-12">
-                                            <label for="inputNombreCliente">Nombre cliente</label>
-                                            <input type="text" class="form-control" name="txtNombreCliente" id="inputNombreCliente" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row mt-4">
-                                        <div class="col-md-4 col-12">
-                                            <label for="inputRut">Rut</label>
-                                            <input type="text" class="form-control" name="txtRut" id="inputRut" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4 col-12">
-                                            <label for="inputRazonSocial">Razon Social</label>
-                                            <input type="text" class="form-control" name="txtRazonSocial" id="inputRazonSocial" placeholder="Nombre">
-                                        </div>
-                                        <div class="col-md-4 col-12">
-                                            <label for="inputDireccionCliente">Direccion cliente</label>
-                                            <input type="text" class="form-control" name="txtDireccionCliente" id="inputDireccionCliente" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                    <button type="submit" style="display: none;" id="addCliente" class="btn btn-success ml-1 col-4">
-                                        <i class="bx bx-check d-block d-sm-none"></i>
-                                        <span class="d-none d-sm-block">Guardar</span>
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>

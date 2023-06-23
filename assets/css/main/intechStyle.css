@@ -171,7 +171,6 @@
   }
 
   #tableDrop td{
-    width: 23%;
     height: auto;
     border: 1px solid black;
     margin: 3px;
@@ -182,58 +181,72 @@
     cursor: pointer;
   }
 
+  #selectableProducts{
+   margin:1px solid red;
+  }
+
+
+  .tableProducts td {
+    /* padding: 0px !important;   */
+  }
+
+  @media (min-width: 1250px) {
+   
+  }
+
+  @media (min-width: 1250px) {
+    .notSelectedProd{
+      max-width: 82%;
+      min-width: 50%;
+    }
+    td .catProd{
+      width: 120px ;
+    }
+    .selectedProd {
+      max-width:18%
+    }
+
+  }
+  
+
+
+
+
+
+  @media (min-width: 1250px) {
+
+      /* .notSelectedProd{
+        width: 100%;
+      }
+      THEME DARK STYLE FOR DISPLAY TABLE AND REUSMEN SELECTED PRODUCTS 
+      .theme-dark .notSelectedProd{
+        width: 100%;
+      } */
+    
+  }
+
+  @media (max-width: 1250px) {
+    #tableDrop .itemProd, #tableDrop .productPrice{
+      display: none;
+    }
+    #tableProducts .itemProd, #tableProducts .productPrice{
+      display:none;
+    }
+  }
+
+
+
+
+  #tbodyReceive{
+    min-height: 200px;
+    border: 1px solid white;
+  }
+
   #tbodyReceive{
     min-height: 200px;
     border: 1px solid white;
   }
   
-  td {
-    position: relative;
-    padding: 8px;
-  }
-  
-  td::before {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px;
-    background-color: #333;
-    color: #fff;
-    font-size: 12px;
-    border-radius: 4px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease-in-out;
-  }
-  
-  td:hover::before {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  td::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 4px;
-    border-style: solid;
-    border-color: transparent;
-    border-bottom-color: #333;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease-in-out;
-  }
-  
-  td:hover::after {
-    opacity: 1;
-    visibility: visible;
-  }
-
-
 
   .centered-spaced{
     display: flex;
@@ -323,11 +336,204 @@
     
   }
 
+  .serachInputDrag{
+    display:flex;
+    max-width: 40%;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .getProjectDetails:hover{
+    border: 2px solid black;
+    transition: .4s all ease;
+    cursor: pointer;
+  }
+
+  .personalPrice{
+    max-height: 30px;
+    margin-left: 20px;
+  }
+  .addPersonal{
+    font-size: 20px;
+    color: green;
+    margin: 0px 5px;
+  }
+  .addPersonal:hover{
+    animation: beat 1.5s infinite alternate;
+  }
+
+  @keyframes beat{
+    0%{
+      transform: scale(1.5) translateY(8px) 
+    }
+    100%{
+      display: none;
+    }
+  }
+
+  .resume-table{
+    width: 100%;
+    margin-top: 40px;
+    border-radius: 1px;
+
+  }
+  .resume-table tr{
+    min-height: calc(100% + 15px);
+    border-bottom: 1px solid gray;
+  }
+  .resume-table td{
+    text-align: center;
+    justify-content: center;
+  }
 
 
+  /* LOADER */
+  .lds-facebook {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-facebook div {
+    display: inline-block;
+    position: absolute;
+    left: 8px;
+    width: 16px;
+    background: #fff;
+    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+  }
+  .lds-facebook div:nth-child(1) {
+    left: 8px;
+    animation-delay: -0.24s;
+  }
+  .lds-facebook div:nth-child(2) {
+    left: 32px;
+    animation-delay: -0.12s;
+  }
+  .lds-facebook div:nth-child(3) {
+    left: 56px;
+    animation-delay: 0;
+  }
+  @keyframes lds-facebook {
+    0% {
+      top: 8px;
+      height: 64px;
+    }
+    50%, 100% {
+      top: 24px;
+      height: 32px;
+    }
+  }
 
 
+.projectNameResume{
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+}
+.dark-theme .projectNameResume{
+  text-align: center;
+}
+.verticalTable tr{
+  border:1px solid black
+}
+.spaced{
+  margin-bottom: 50px;
+}
+
+.verticalTable td, .verticalTable th{
+  margin: 5px;
+  padding:3px;
+  text-align: center;
+  vertical-align: baseline;
+}
+.theme-dark .verticalTable td,.theme-dark .verticalTable th{
+  margin: 5px;
+  padding:3px;
+  text-align: center;
+  vertical-align: baseline;
+  transition: all .4s ease;
+
+}
+
+.tbodyHeader,.verticalTable th{
+  border: 1px solid black;
+  background-color: grey;
+  color: black;
+  width: 30%;
+  font-size: 18px;
+  font-weight: 700;
+  transition: all .4s ease;
+
+}
+
+.theme-dark .tbodyHeader,.theme-dark .verticalTable th{
+  border: 1px solid rgba(255, 255, 255, 0.703);
+  background-color: #1e1e2d;
+  color: white;
+  width: 30%;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all .4s ease;
+
+}
+
+.theme-dark .tbodyHeaderTotal{
+  background-color: #1e1e2d;
+  transition: all .4s ease;
+}
+.tbodyHeaderTotal{
+  background-color: lightcoral;
+  transition: all .4s ease;
+}
+
+#projectData{
+  margin-bottom: 30px;
+}
+
+.deleteRow{
+  color:red;
+  font-size: 18px;
+  transition: .5s all ease;
+}
 
 
+.section-cost{
+  margin:20px 0px;
+  font-size: 25px;
+  border: 1px solid black;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+
+  align-items: center;
+}
+
+.centerText{
+  text-align: center;
+}
+
+.margin-button{
+ margin: 0px 10px;
+ 
+}
+
+.theme-dark #projectSubArriendos tr{
+  border: 1px solid rgba(255, 255, 255, 0.11) !important;
+}
+
+#projectSubArriendos tr{
+  border: 1px solid red
+}
 
 
+#tableProducts_wrapper > .productName{
+  min-width: 25% !important;
+}
+
+table.dataTable tbody td .productName {
+  padding: 8px 10px;
+}

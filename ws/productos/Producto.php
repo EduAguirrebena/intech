@@ -38,6 +38,19 @@ if ($_POST) {
             $addProdResponse = addProd($jsonCreateProd);
             echo $addProdResponse;
             break;
+        case 'dropAssigmentProduct':
+            // Recibe el parámetro jsonCreateProd
+            $idProject = $data->idProject;
+            // Llama a la función addProd y devuelve el resultado
+            $droppedIds = dropAssigmentProduct($idProject);
+            echo $droppedIds;
+            break;
+        case 'GetAvailableProducts':
+            $empresaId = $data->empresaId;
+            // Llama a la función GetAvailableProducts y devuelve el resultado
+            $products = json_encode(GetAvailableProducts($empresaId));
+            echo $products;
+            break;
         case 'assignProductToProject':
             // Recibe el parámetro jsonCreateProd
             $request = $data->request;
@@ -63,31 +76,31 @@ if ($_POST) {
         $tipo = $data->tipo;
         $queryProd = "";
         $productos = [];
-    
+
         if($tipo === "categoria"){
             $queryProd = "SELECT i.item as Item ,c.nombre as categoria, p.nombre as nombre, p.precio_arriendo as arriendo, p.precio_compra as compra ,
-                          mo.modelo as modelo ,m.marca as marca 
-            from producto p 
-            INNER JOIN categoria_has_item chi on chi.id = p.categoria_has_item_id 
-            INNER JOIN categoria c on c.id = chi.categoria_id 
-            INNER JOIN marca m on m.id = p.marca_id 
-            INNER JOIN modelo mo on mo.marca_id = m.id
-            INNER JOIN item i on i.id  = chi.item_id 
-            WHERE LOWER(c.nombre) = '".strtolower($categoria)."' and p.empresa_id = 1
-            GROUP BY p.nombre";
+                          m.marca as marca, inv.cantidad
+                            from producto p 
+                            INNER JOIN inventario inv on inv.producto_id  = p.id
+                            INNER JOIN categoria_has_item chi on chi.id = p.categoria_has_item_id 
+                            INNER JOIN categoria c on c.id = chi.categoria_id 
+                            INNER JOIN marca m on m.id = p.marca_id 
+                            INNER JOIN item i on i.id  = chi.item_id 
+                            WHERE LOWER(c.nombre) = '".strtolower($categoria)."' and p.empresa_id = 1
+                            GROUP BY p.nombre";
         }
     
         if($tipo === "item"){
             $queryProd ="SELECT i.item as Item ,c.nombre as categoria, p.nombre as nombre, p.precio_arriendo as arriendo, p.precio_compra as compra, 
-                         mo.modelo as modelo ,m.marca as marca 
-            from producto p 
-            INNER JOIN categoria_has_item chi on chi.id =p.categoria_has_item_id 
-            INNER JOIN categoria c on c.id = chi.categoria_id 
-            INNER JOIN marca m on m.id = p.marca_id 
-            INNER JOIN modelo mo on mo.marca_id = m.id
-            INNER JOIN item i on i.id  = chi.item_id 
-            WHERE LOWER(i.item) = '".strtolower($item)."' and LOWER(c.nombre)= '".strtolower($categoria)."' and p.empresa_id = 1
-            GROUP BY p.nombre";
+                        m.marca as marca, inv.cantidad
+                        from producto p 
+                        INNER JOIN inventario inv on inv.producto_id  = p.id
+                        INNER JOIN categoria_has_item chi on chi.id =p.categoria_has_item_id 
+                        INNER JOIN categoria c on c.id = chi.categoria_id 
+                        INNER JOIN marca m on m.id = p.marca_id 
+                        INNER JOIN item i on i.id  = chi.item_id 
+                        WHERE LOWER(i.item) = '".strtolower($item)."' and LOWER(c.nombre)= '".strtolower($categoria)."' and p.empresa_id = 1
+                        GROUP BY p.nombre";
         }
     
         $responseBdProd = $conn->mysqli->query($queryProd);
@@ -125,12 +138,61 @@ if ($_POST) {
         return $productos;
     }
 
+
+    function GetAvailableProducts(){
+        $conn = new bd();
+        $conn->conectar();
+
+
+        $queryGetAvailable = "SELECT  p.id, 
+                                p.nombre, 
+                                cat.nombre as categoria,
+                                it.item,
+                                p.precio_arriendo,
+                                i.cantidad as stock,
+                                php.cantidad as assigned,
+                                pro.fecha_inicio,
+                                pro.fecha_termino,
+                                phe.estado_id  as estado
+                                FROM proyecto_has_producto php 
+                                RIGHT JOIN proyecto_has_estado phe on phe.proyecto_id = php.proyecto_id 
+                                RIGHT JOIN producto p on p.id = php.producto_id
+                                INNER JOIN inventario i on i.producto_id  = p.id
+                                INNER JOIN categoria_has_item chi on chi.id = p.categoria_has_item_id 
+                                INNER JOIN categoria cat on cat.id = chi.categoria_id
+                                INNER JOIN item it on it.id = chi.item_id 
+                                LEFT join proyecto pro on pro.id = php.proyecto_id
+                                WHERE p.empresa_id = 1";
+
+        $responseDB = $conn->mysqli->query($queryGetAvailable);
+        while($dataResponseBd = $responseDB->fetch_object()){
+            $products[] = $dataResponseBd;
+        }
+        $conn->desconectar();
+        return $products;
+
+    }
+
     function assignProductToProject($request){
         $conn = new bd();
         $conn->conectar();
         $arrayResponse = [];
-    
+
+        foreach (array_slice($request, 0, 1) as $req) {
+            if(isset($req->idProject)){
+                $idProject = $req->idProject;
+                $queryIfAssigned = "SELECT * FROM proyecto_has_producto php WHERE php.proyecto_id = $idProject";
+                if($conn->mysqli->query($queryIfAssigned)->num_rows>0){
+        
+                    $qdelete = "DELETE FROM proyecto_has_producto WHERE proyecto_id =$idProject";
+                    $conn->mysqli->query($qdelete);
+        
+                }
+            }
+        }
+        
         foreach ($request as $req) {
+            
             $idProject = $req->idProject;
             $idProduct = $req->idProduct;
             $price = $req->price;
@@ -140,17 +202,33 @@ if ($_POST) {
                     (proyecto_id, producto_id, cantidad, arriendo)
                     VALUES($idProject, $idProduct, $quantity, $price);";
     
-            if ($conn->mysqli->query($query)) {
-    
-                array_push($arrayResponse, array("Asignado" => array("id" => $idProduct)));
+            if ($conn->mysqli->query($query)){
+                array_push($arrayResponse, array("Asignado" => array("id" => $idProduct,"descontados"=>$quantity)));
             } else {
-    
                 array_push($arrayResponse, array("NoAsignado" => array("id" => $idProduct)));
             }
         }
     
         $conn->desconectar();
         return $arrayResponse;
+        // return $query;
+    }
+
+    function dropAssigmentProduct($idProject){
+        $conn = new bd();
+        $conn->conectar();
+
+        $queryIfAssigned = "SELECT * FROM proyecto_has_producto php WHERE php.proyecto_id = $idProject";
+
+        if($conn->mysqli->query($queryIfAssigned)->num_rows>0){
+
+            $qdelete = "DELETE FROM proyecto_has_producto WHERE proyecto_id =$idProject";
+            $conn->mysqli->query($qdelete);
+
+        }
+        $conn->desconectar();
+        return true;
+        
     }
 
 

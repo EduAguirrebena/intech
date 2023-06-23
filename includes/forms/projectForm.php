@@ -20,9 +20,9 @@
                     <div class="mt-2 row">
                         <div class="col-lg-6 col-md-12">
                             <label for="direccionInput">Direccion del proyecto</label>
-                            <input autocomplete="off" type="text" class="form-control" name="txtDir" id="direccionInput" placeholder="Dirección">
+                            <input autocomplete="off" type="text" idCliente class="form-control" name="txtDir" id="direccionInput" placeholder="Dirección">
                         </div>
-                        <div class="col-lg-3 col-md-12">
+                        <div class="col-lg-6 col-md-12">
                             <label for="inputNombreCliente">Nombre Cliente</label>
                             <input autocomplete="off" type="text" class="form-control" name="txtCliente" id="inputNombreCliente" placeholder="Cliente">
                         </div>

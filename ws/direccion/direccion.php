@@ -12,6 +12,14 @@ if ($_POST){
             $request = $data->request;
             $result = addDireccion($request);
             break;
+        case 'getDireccion':
+            $request = $data->request;
+            $result = getDireccion($request);
+            break;
+        case 'getDireccionesByEmpresa':
+            $request = $data->request;
+            $result = getDireccionesByEmpresa($request);
+            break;
         default:
             $result = false;
             break;
@@ -52,5 +60,46 @@ if ($_POST){
             $conn->desconectar();
             return false;
         }
+    }
+
+
+    function getDireccion($request){
+
+        $conn= new bd();
+        $conn ->conectar();
+        $direccionId = $request;
+
+        $query = "SELECT * FROM direccion d where d.id = $direccionId";
+
+        if($responseBd = $conn->mysqli->query($query)){
+            
+            while($dataResponse = $responseBd->fetch_object()){
+                $direcciones[] = $dataResponse; 
+            }
+        }else{
+            $conn->desconectar();
+            return false;
+        }
+        return json_encode(array("direcciones"=>$direcciones));
+    }
+    function getDireccionesByEmpresa($request){
+
+        $conn= new bd();
+        $conn ->conectar();
+        $direccionId = "";
+        $direcciones = [];
+
+        $query = "SELECT * FROM direccion d";
+
+        if($responseBd = $conn->mysqli->query($query)){
+            
+            while($dataResponse = $responseBd->fetch_object()){
+                $direcciones[] = $dataResponse; 
+            }
+        }else{
+            $conn->desconectar();
+            return false;
+        }
+        return json_encode(array("direcciones"=>$direcciones)); 
     }
 ?>

@@ -109,87 +109,93 @@ $active = 'personal';
                         </div>
                         <form id="addPersonal">
                             <div class="modal-body">
-                                <table style="width: 100%;">
-                                    <tr>
-                                        <td>
-                                            <label for="nombres">Nombres:</label>
-                                            <div class="form-group">
-                                                <input name="nombres" id="nombres" type="text" placeholder="Nombres" class="form-control" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label for="apellidos">Apellidos:</label>
-                                            <div class="form-group">
-                                                <input name="apellidos" id="apellidos" type="text" placeholder="Apellidos" class="form-control" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label for="rut">Rut:</label>
-                                            <div class="form-group">
-                                                <input name="rut" id="rut" type="text" placeholder="rut" class="form-control" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label>Telefono</label>
-                                            <div class="form-group">
-                                                <input name="telefono" type="text" placeholder="56 9 1231 2345" class="form-control" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <label>Cargo:</label>
-                                            <div class="form-group">
-                                                <select name="cargo_select" id="cargo_select" class="form-select">
-                                                    <option value=""></option>
-                                                    <?php
-                                                    foreach ($cargos as $key => $value) :
-                                                    ?>
-                                                        <option value="<?= $value->cargo ?>"><?= $value->cargo ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </td>
 
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label>Especialidad</label>
-                                            <div class="form-group">
-                                                <select name="especialidad_select" id="especialidad_select" class="form-select">
-                                                    <option value=""></option>
-                                                    <?php
-                                                    foreach ($especialidades as $key => $value) :
-                                                    ?>
-                                                        <option value="<?= $value->especialidad ?>"><?= $value->especialidad ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <td>
-                                            <label>Tipo de contrato</label>
-                                            <div class="form-group">
-                                                <select name="contrato_Select" id="contrato_Select" class="form-select">
-                                                    <option value=""></option>
-                                                    <?php
-                                                    foreach ($contratos as $key => $value) :
-                                                    ?>
-                                                        <option value="<?= $value->contrato ?>"><?= $value->contrato ?></option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </table>
+                                <div class="row" style="margin-bottom: 8px;">
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                        <label for="nombres">Nombres:</label>
+                                        <div class="form-group">
+                                            <input name="nombres" id="nombres" type="text" placeholder="Nombres" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                        <label for="apellidos">Apellidos:</label>
+                                        <div class="form-group">
+                                            <input name="apellidos" id="apellidos" type="text" placeholder="Apellidos" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                        <label for="rut">Rut:</label>
+                                        <div class="form-group">
+                                            <input name="rut" id="rut" type="text" placeholder="rut" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                        <label>Telefono</label>
+                                        <div class="form-group">
+                                            <input name="telefono" id="inputTelefonoPersonal" type="text" placeholder="56 9 1231 2345" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                            <label for="correoPersonalAddUnitario">Correo</label>
+                                           <input type="text" name="correoPersonalAddUnitario" class="form-control" id="correoPersonalAddUnitario">
+                                    </div>
+                                    <hr>
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4 col-12">
+                                        <label>Cargo:</label>
+                                        <div class="form-group">
+                                            <select name="cargo_select" id="cargo_select" class="form-select">
+                                                <option value=""></option>
+                                                <?php
+                                                foreach ($cargos as $key => $value) :
+                                                ?>
+                                                    <option value="<?= $value->cargo ?>"><?= $value->cargo ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-12">
+                                        <label>Especialidad</label>
+                                        <div class="form-group">
+                                            <select name="especialidad_select" id="especialidad_select" class="form-select">
+                                                <option value=""></option>
+                                                <?php
+                                                foreach ($especialidades as $key => $value) :
+                                                ?>
+                                                    <option value="<?= $value->especialidad ?>"><?= $value->especialidad ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-12">
+                                        <label>Tipo de contrato</label>
+                                        <div class="form-group">
+                                            <select name="contrato_Select" id="contrato_Select" class="form-select">
+                                                <option value=""></option>
+                                                <?php
+                                                foreach ($contratos as $key => $value) :
+                                                ?>
+                                                    <option value="<?= $value->contrato ?>"><?= $value->contrato ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-12">
+                                        <div class="form-group">
+                                            <label for="neto">Costo Neto</label>
+                                            <input type="number" name="neto" class="form-control" id="neto">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                     <i class="bx bx-x d-block d-sm-none"></i>
                                     <span class="d-none d-sm-block">Close</span>
                                 </button>
-                                <input type="submit" value="Agregar" class="btn btn-info">
+                                <input type="submit" value="Agregar" class="btn btn-success">
                             </div>
                         </form>
                     </div>
@@ -330,7 +336,6 @@ $active = 'personal';
                 fixedHeader: true
             })
 
-
             $('#addPersonal').validate({
                 rules: {
                     nombres: {
@@ -352,6 +357,15 @@ $active = 'personal';
                     },
                     cargo_select: {
                         required: true
+                    },
+                    telefono:{
+                        required:true
+                    },
+                    correoPersonalAddUnitario:{
+                        required:true
+                    },
+                    neto:{
+
                     }
                 },
                 messages: {
@@ -364,7 +378,7 @@ $active = 'personal';
                         minlength: "El largo mínimo es de 3 caracteres"
                     },
                     rut: {
-
+                        required:"Ingrese un valor"
                     },
                     especialidad_select: {
                         required: "Ingrese un valor"
@@ -374,36 +388,47 @@ $active = 'personal';
                     },
                     cargo_select: {
                         required: "Ingrese un valor"
+                    },
+                    telefono:{
+                        required:"Ingrese un valor"
+                    },
+                    correoPersonalAddUnitario:{
+                        required:"Ingrese un valor"
+                    },
+                    neto:{
+
                     }
 
                 },
                 submitHandler: function(form) {
                     event.preventDefault();
+                    console.log("AGREGAR PERSONAL UNITARIO");
                     let nombres = $('#nombres').val();
                     let apellidos = $('#apellidos').val();
                     let rut = $('#rut').val();
                     let especialidad = $('#especialidad_select').val();
                     let contrato = $('#contrato_Select').val();
                     let cargo = $('#cargo_select').val();
+                    let correoPersonal = $('#inputTelefonoPersonal').val();
+                    let telefonoPersonal = $('#correoPersonalAddUnitario').val();
+                    let neto = $('#neto').val();
 
                     let arrayRequest = [{
                         "nombre": nombres,
                         "apellido": apellidos,
                         "rut": rut,
+                        "telefono": telefonoPersonal,
+                        "correo": correoPersonal,
                         "cargo": cargo,
                         "especialidad": especialidad,
-                        "contrato": contrato
+                        "contrato": contrato,
+                        "neto": neto
                     }]
 
                     $.ajax({
                         type: "POST",
-                        url: "ws/personal/Personal.php",
-                        data: JSON.stringify({
-                            action: "addPersonalToProject",
-                            request: {
-                                arrayRequest
-                            }
-                        }),
+                        url: "ws/personal/addpersonal.php",
+                        data: JSON.stringify(arrayRequest),
                         dataType: 'json',
                         success: function(data) {
                             console.log(data);
@@ -418,7 +443,7 @@ $active = 'personal';
 
 
 
-        const dataArrayIndex = ['nombres', 'apellidos', 'rut', 'telefono', 'correo', 'cargo','especialidad','contrato']
+        const dataArrayIndex = ['nombres', 'apellidos', 'rut', 'telefono', 'correo', 'cargo', 'especialidad', 'contrato']
         const dataArray = {
             'xlsxData': [{
                     'name': 'nombres',
@@ -627,15 +652,15 @@ $active = 'personal';
                         "nombre": value[0],
                         "apellido": value[1],
                         "rut": value[2],
-                        "telefono":value[3],
-                        "correo":value[4],
+                        "telefono": value[3],
+                        "correo": value[4],
                         "cargo": value[5],
                         "especialidad": value[6],
                         "contrato": value[7]
                     }
                     return returnArray
                 })
-                console.log("requestArray",arrayRequest);
+                console.log("requestArray", arrayRequest);
                 $.ajax({
                     type: "POST",
                     url: "ws/personal/addpersonal.php",
@@ -707,7 +732,7 @@ $active = 'personal';
 
 
 
-        //   const arregloPersonal = <? // echo json_encode($arregloPersonal); ?>;
+        
         //   function ExportToExcel(type, fn, dl) {
         //     var elt = document.getElementById('example');
         //     // console.log(elt);

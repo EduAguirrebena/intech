@@ -1,4 +1,3 @@
-
 <div id="sidebar" class="active">
   <div class="sidebar-wrapper active">
     <div class="sidebar-header position-relative">
@@ -119,17 +118,17 @@
           </a>
           <ul class="submenu">
             <li class="submenu-item">
-              <a href="proximosEventos.php">Proximos Eventos</a>
+              <a href="proximosEventos.php">Crear Evento</a>
             </li>
             <li class="submenu-item">
               <a href="proyectos.php">Lista de Eventos</a>
             </li>
-            <li class="submenu-item">
+            <!-- <li class="submenu-item">
               <a href="">Crear Evento</a>
             </li>
             <li class="submenu-item">
               <a href="">Eventos pasados</a>
-            </li>
+            </li> -->
           </ul>
         </li>
 
@@ -203,7 +202,7 @@
           echo '<li class="sidebar-item">';
         }
         ?>
-          <a href="/proyectos2.php" class="sidebar-link">
+          <a href="/TablaResumen.php" class="sidebar-link">
             <i class="fa-solid fa-infinity"></i>
             <!-- <i class="bi bi-person-check"></i> -->
             <span>Pruebas</span>

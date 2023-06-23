@@ -13,20 +13,18 @@ $queryProductos = 'Select c.nombre , i.item, p.nombre, mo.modelo, p.precio_arrie
                     INNER JOIN modelo mo on mo.marca_id = m.id 
                     WHERE p.empresa_id = 1';
 
-
-
 $queryCategorias = 'select c.nombre ,c.id  from categoria c';
-                    // inner join categoria_has_item chi on chi.categoria_id = c.id 
-                    // INNER JOIN producto p on p.categoria_has_item_id  = chi.id 
-                    // where p.empresa_id = 1
-                    // group by c.nombre ';
+// inner join categoria_has_item chi on chi.categoria_id = c.id 
+// INNER JOIN producto p on p.categoria_has_item_id  = chi.id 
+// where p.empresa_id = 1
+// group by c.nombre ';
 
-if($categoriasBdResponse = $conn->mysqli->query($queryCategorias)){
-    while($dataCategorias = $categoriasBdResponse->fetch_object()){
-        $categorias []=  $dataCategorias;
+
+if ($categoriasBdResponse = $conn->mysqli->query($queryCategorias)) {
+    while ($dataCategorias = $categoriasBdResponse->fetch_object()) {
+        $categorias[] =  $dataCategorias;
     }
-}else{
-    
+} else {
 }
 ?>
 
@@ -40,13 +38,13 @@ $active = 'inventario';
 ?>
 
 <body>
+    <?php include_once('./includes/Constantes/empresaId.php')?>
     <script src="./assets/js/initTheme.js"></script>
     <div id="app">
 
         <?php
-        require_once('./includes/sidebar.php');
+            require_once('./includes/sidebar.php');
         ?>
-
 
         <div id="main">
             <nav class="topbar navbar navbar-expand-lg navbar-light">
@@ -55,7 +53,7 @@ $active = 'inventario';
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul id="topBar-Content"  class="navbar-nav mr-auto">
+                    <ul id="topBar-Content" class="navbar-nav mr-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
@@ -63,39 +61,38 @@ $active = 'inventario';
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="">Categorías</a>
                             <ul class="dropdown-menu">
                                 <?php
-                                    if(count($categorias) === 0){
-                                        echo '<li><a href="">Haz click aquí para poder Crear tus categorías</a></li>';
-                                    }else{
-                                        foreach ($categorias as $key => $value){
-                                            $catNombre = $value->nombre;
+                                if (count($categorias) === 0) {
+                                    echo '<li><a href="">Haz click aquí para poder Crear tus categorías</a></li>';
+                                } else {
+                                    foreach ($categorias as $key => $value) {
+                                        $catNombre = $value->nombre;
 
-                                            echo '<li> <a class="'.strtolower($catNombre).' categoria dropdown-item">'.ucfirst($catNombre).' &raquo</a>';
-                                            
-                                            $queryItems = "SELECT i.item , c.nombre  from item i 
+                                        echo '<li> <a class="' . strtolower($catNombre) . ' categoria dropdown-item">' . ucfirst($catNombre) . ' &raquo</a>';
+
+                                        $queryItems = "SELECT i.item , c.nombre  from item i 
                                                             INNER JOIN categoria_has_item chi on chi.item_id = i.id 
                                                             INNER JOIN categoria c on c.id =chi.categoria_id 
                                                             INNER JOIN producto p on p.categoria_has_item_id = chi.id
-                                                            WHERE LOWER(c.nombre) = '".$catNombre."'
+                                                            WHERE LOWER(c.nombre) = '" . $catNombre . "'
                                                             GROUP BY chi.id ";
 
-                                            $items = [];
-                                            $responseBdItems = $conn->mysqli->query($queryItems);
-                                            while($dataItems =$responseBdItems->fetch_object()){
-                                                $items [] = $dataItems;
-                                            }
-                                            
-                                            if(count($items) > 0){
-                                                echo '<ul class="dropdown-menu submenu">';
-                                                foreach ($items as $key => $item) {
-
-                                                    echo '<li><a class="'.$item->item.' '.$catNombre.' item dropdown-item">'.$item->item.' </a></li>';
-                                                
-                                                }
-                                                echo '</ul>';
-                                            }
-                                            echo '</li>';
+                                        $items = [];
+                                        $responseBdItems = $conn->mysqli->query($queryItems);
+                                        while ($dataItems = $responseBdItems->fetch_object()) {
+                                            $items[] = $dataItems;
                                         }
+
+                                        if (count($items) > 0) {
+                                            echo '<ul class="dropdown-menu submenu">';
+                                            foreach ($items as $key => $item) {
+
+                                                echo '<li><a class="' . $item->item . ' ' . $catNombre . ' item dropdown-item">' . $item->item . ' </a></li>';
+                                            }
+                                            echo '</ul>';
+                                        }
+                                        echo '</li>';
                                     }
+                                }
                                 ?>
                             </ul>
                         </li>
@@ -128,7 +125,7 @@ $active = 'inventario';
                 <div class="row">
                     <div class="col-8 col-lg-3 col-sm-4">
                         <div class="card">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#xlarge">
+                            <button type="button" id="buttonProductoUnitario" class="btn btn-success">
                                 Agregar
                             </button>
                         </div>
@@ -136,10 +133,17 @@ $active = 'inventario';
 
                     <div class="col-8 col-lg-3 col-sm-4">
                         <div class="card">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#xlarge">
-                                Agregar Producots masivo
+                            <button type="button" class="btn btn-success" id="buttonProductosMasiva" data-bs-toggle="modal" data-bs-target="#masivaProductoCreation">
+                                Agregar Productos masivo
                             </button>
                             <input class="form-control form-control-sm" id="excel_input" type="file" />
+                        </div>
+                    </div>
+                    <div class="col-8 col-lg-3 col-sm-4">
+                        <div class="card">
+                            <button type="button" class="btn btn-success" id="buttonAddCatItem" data-bs-toggle="modal" data-bs-target="#modalCatItemAdd">
+                                Agregar una nueva categoría o ítem
+                            </button>
                         </div>
                     </div>
 
@@ -148,7 +152,12 @@ $active = 'inventario';
 
 
             <!-- modal agregar Producto -->
-            <?require_once('./includes/Modal/productoModal.php');?>
+            <?php include_once('./includes/Modal/productoModal.php')?>
+            <!-- END MODAL AGREGAR PRODUCTO -->
+
+            <!-- INCLUDE MODAL ACTEGORIA ITEM  -->
+            <?php include_once('./includes/Modal/categoriaItem.php')?>
+            <!-- END MODAL CATEGORIA ITEM -->
 
             <div class="page-content">
                 <!-- aca va la info de la pagina -->
@@ -198,36 +207,10 @@ $active = 'inventario';
                     </div>
                 </div>
             </div>
-            <!-- Modal agregar personal masiva -->
-            <div class="modal fade modal-xl" id="masivaProductoCreation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Desea ingresar esta información</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div style="margin:0px 30px" class="modal-body">
-                            <table class="table" id="excelTable">
-                                <thead>
 
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="modalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-success" id="saveExcelData">Guardar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- FIN modal masiva -->
-
-
+            <!-- Modal agregar productos masiva -->
+            <?php include_once('./includes/Modal/productosMasiva.php'); ?>
+            <!-- end modal agregar producots masiva -->
 
             <!-- Modal errores post agregar Masiva -->
             <div class="modal fade modal-xl" id="modalErrMasiva" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -275,308 +258,109 @@ $active = 'inventario';
     <!-- Validate.js -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
 
+    <!-- JS FUNCTIONS REFERENCES -->
+    <script src="/js/valuesValidator/validator.js"></script>
+    <script src="/js/categorias.js"></script>
+    <script src="/js/marca.js"></script>
+    <script src="/js/item.js"></script>
+
 </body>
-    <script>
-        $(document).ready(function() {
-            $('#example').DataTable({
-                fixedHeader: true
-            });
-        })
+<script>
 
-        $('.categoria').on('click',function(){
-            let categoria = $(this).text().split(' ')[0];
-            let item = $(this).attr('class').split(' ')[1];
-            
-            $.ajax({
-                    type: "POST",
-                    url: "ws/productos/Producto.php",
-                    data: JSON.stringify({action:"sortProducts",
-                    requestJson:{categoria : categoria,
-                                          item : item,
-                                          tipo : "categoria"}}),
-                    dataType: 'json',
-                    success: async function(data) {
-                        let tr = ''
-                        data.forEach(value => {
-                            tr = `<tr>
-                                <td>${value.categoria}</td>
-                                <td>${value.Item}</td>
-                                <td>${value.nombre}</td>
-                                <td>${value.modelo}</td>
-                                <td>stock</td>
-                                <td>Disponibles</td>
-                                <td>${value.arriendo}</td>
-                                <td>${value.compra}</td>
-                                <td>estado</td>
-                                <td><i class="fa-solid fa-trash"></i></td>
-                            </tr>`
-                            $('#tableProductos>tbody').append(tr);
-                        });
-                        
-                        
-                    },
-                    error: function(data) {
-                        console.log(data.responseText);
-                    }
-                })
-        })
+    const IDEMPRESA = document.getElementById('empresaId').textContent;
 
-        $('.item').on('click',function(){
-            let categoria = $(this).attr('class').split(' ')[1];
-            let item = $(this).attr('class').split(' ')[0];
+    $('#buttonProductosMasiva').on('click', function() {
+        $('#masivaProductoCreation').modal('show');
+    })
 
-            console.log(categoria);
+    $('#buttonProductoUnitario').on('click', function() {
+        console.log("BOTON UNITARIO");
+        $('#productoUnitarioCreation').modal('show');
 
-            $.ajax({
-                    type: "POST",
-                    url: "ws/productos/Producto.php",
-                    data: JSON.stringify({action:"sortProducts",
-                                        requestJson:{categoria : categoria,
-                                                        item : item,
-                                                        tipo : "item"}}),
-                    dataType: 'json',
-                    success: async function(data){
-                        console.log(data);
-                        let tr = ''
-                        $('#tableProductos>tbody').empty()
-                        data.forEach(value => {
-                            tr = `<tr>
-                                <td>${value.categoria}</td>
-                                <td>${value.Item}</td>
-                                <td>${value.nombre}</td>
-                                <td>${value.modelo}</td>
-                                <td>stock</td>
-                                <td>Disponibles</td>
-                                <td>${value.arriendo}</td>
-                                <td>${value.compra}</td>
-                                <td>estado</td>
-                                <td><i class="fa-solid fa-trash"></i></td>
-                            </tr>`
-                            $('#tableProductos>tbody').append(tr);
-                        });
-                        
-                    },
-                    error: function(data) {
-                        console.log(data.responseText);
-                    }
-                })
-        })
+        console.log($('#productoUnitarioModal'))
+    });
 
-        const dataArrayIndex = ['Nombre producto', 'marca', 'modelo', 'categoria asociada', 'item asociado', 'cantidad', 'precio compra', 'precio estimado arriendo']
-        const dataArray = {
-            'xlsxData': [{
-                    'name': 'Nombre producto',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
+    $(document).ready(async function() {
+        $('#example').DataTable({
+            fixedHeader: true
+        });
+
+        await GetCategorias();
+        await GetMarca();
+        await GetItems();
+
+
+
+        $('#productosCreateUnitario').validate({
+            rules:{
+                txtNombreProducto:{
+                    required:true
                 },
-                {
-                    'name': 'marca',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
+                categoriaSelect:{
+                    required:true
                 },
-
-                {
-                    'name': 'modelo',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': true
+                marcaSelect:{
+                    required:true
                 },
-
-                {
-                    'name': 'categoria asociada',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
+                itemSelect:{
+                    required:true
                 },
-
-                {
-                    'name': 'item asociado',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 15,
-                    'notNull': false
+                txtCantidad:{
+                    required:true
                 },
-
-                {
-                    'name': 'cantidad',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
+                txtPrecioCompra:{
+                    required:true
                 },
-
-                {
-                    'name': 'precio compra',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
-                },
-
-                {
-                    'name': 'precio estimado arriendo',
-                    'type': 'string',
-                    'minlength': 3,
-                    'maxlength': 50,
-                    'notNull': false
+                txtPrecioEstimadoArriendo:{
+                    required:true
                 }
-            ]
-        }
-
-        //Funcion que verifica la extension del archivo ingresado
-        function GetFileExtension() {
-            fileName = $('#excel_input').val();
-            extension = fileName.split('.').pop();
-            return extension;
-        }
-
-        $('#excel_input').on('change', async function() {
-            const extension = GetFileExtension()
-            if (extension == "xlsx") {
-
-                const tableContent = await xlsxReadandWrite(dataArray);
-                let tableHead = $('#excelTable>thead')
-                let tableBody = $('#excelTable>tbody')
-                $('#masivaProductoCreation').modal('show')
-
-                //LIMPIAR TABLA
-                tableBody.empty()
-                tableHead.empty()
-                //LLENAR TABLA
-                tableHead.append(tableContent[0])
-                tableBody.append(tableContent[1])
-
-            } else(
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ups',
-                    text: 'Debes cargar un Excel',
-                })
-            )
-        })
-
-
-        $('#excelTable>tbody').on('blur', 'td', function() {
-
-            let value = $(this).text()
-
-            //obtencion de las propiedades del TD
-            let tdListClass = $(this).attr("class").split(/\s+/);
-            let tdClass = tdListClass[0]
-            let tdPropertiesIndex = dataArrayIndex.indexOf(tdClass)
-            let tdProperties = dataArray.xlsxData[tdPropertiesIndex]
-
-            // SETEO DE PROPIEDADES
-            let type = tdProperties.type
-            let minlength = tdProperties.minlength
-            let maxlength = tdProperties.maxlength
-            let notNull = tdProperties.notNull
-
-            //OBTENCION DE PROPIEDADES DE VALOR DE CELDA
-
-            let tdType = isNumeric(value)
-            let tdMinlength = minLength(value, minlength)
-            let tdMaxlength = maxLength(value, maxlength)
-
-            let tdNull = isNull(value);
-
-            let errorCheck = false
-            let tdTitle = ""
-
-
-
-            //atributos return a td
-            if (!notNull && tdNull) {
-                errorCheck = false
-                tdTitle = "Ingrese un valor"
-
-            } else {
-
-                if (type === "string" && tdType) {
-                    errorCheck = true
-                } else if (type === "int" && !tdType) {
-                    errorCheck = false
-                    tdTitle = "Ingrese un número"
-                } else {
-                    errorCheck = true
+            },
+            messages:{
+                txtNombreProducto:{
+                    required: "Ingrese un valor"
+                },
+                categoriaSelect:{
+                    required: "Ingrese un valor"
+                },
+                marcaSelect:{
+                    required: "Ingrese un valor"
+                },
+                itemSelect:{
+                    required: "Ingrese un valor"
+                },
+                txtCantidad:{
+                    required: "Ingrese un valor"
+                },
+                txtPrecioCompra:{
+                    required: "Ingrese un valor"
+                },
+                txtPrecioEstimadoArriendo:{
+                    required: "Ingrese un valor"
                 }
-                if (!notNull) {
-                    if (!tdMinlength) {
-                        tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
-                        errorCheck = false
-                    }
-                    if (!tdMaxlength) {
-                        tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
-                        errorCheck = false
-                    }
-                } else {}
-            }
-            if (!errorCheck) {
-                $(this).prop('title', tdTitle)
-                $(this).addClass('err')
-            } else {
-                $(this).prop('title', "")
-                $(this).removeClass('err')
-            }
-        })
+            },submitHandler:function(){
+                event.preventDefault();
 
-        //Cerrar Modal
-        $('#modalClose').on('click', function() {
-            $('#masivaProductoCreation').modal('hide')
-        })
+                let NombreProducto = $('#inputNombreProducto').val();
+                let categoriaSelect = $('#categoriaSelect selectedIndex').text();
+                let marcaSelect = $('#marcaSelect selectedIndex').text();
+                let itemSelect = $('#itemSelect selectedIndex').text();
+                let cantidad = $('#inputCantidad').val();
+                let precioCompra = $('#inputPrecioCompra').val();
+                let precioEstimadoArriendo = $('#inputPrecioEstimadoArriendo').val();
 
+                let arrayRequest = [{
+                    "nombre": NombreProducto.trim(),
+                    "marca": marcaSelect.trim(),
+                    "modelo": "Generico",
+                    "categoria": categoriaSelect.trim(),
+                    "item": itemSelect.trim(),
+                    "stock": cantidad.trim(),
+                    "precioCompra": precioCompra.trim(),
+                    "precioArriendo": precioEstimadoArriendo.trim()
+                }]
 
+                console.log(JSON.stringify(arrayRequest));
 
-        //GUARDAR REGISTROS MASIVA DENTRO DE MODAL
-        $('#saveExcelData').on('click', function() {
-            let counterErr = 0;
-
-            $('#excelTable>tbody td').each(function() {
-
-                var cellText = $(this).hasClass('err')
-                if (cellText) {
-                    counterErr++
-                }
-
-            });
-
-            if (counterErr == 0) {
-
-                let arrTd = []
-                let preRequest = []
-
-                $('#excelTable>tbody tr').each(function() {
-
-                    arrTd = []
-                    let td = $(this).find('td')
-
-                    td.each(function() {
-                        let tdTextValue = $(this).text()
-                        arrTd.push(tdTextValue)
-                    })
-                    preRequest.push(arrTd)
-                });
-
-                const arrayRequest = preRequest.map(function(value) {
-                    let returnArray = {
-                        "nombre": value[0],
-                        "marca": value[1],
-                        "modelo": value[2],
-                        "categoria": value[3],
-                        "item": value[4],
-                        "stock": value[5],
-                        "precioCompra": value[6],
-                        "precioArriendo": value[7]
-                    }
-                    return returnArray
-                })
-                // console.log(JSON.stringify({action:"addProd",request:{arrayRequest}}));
                 $.ajax({
                     type: "POST",
                     url: "ws/productos/addProductos.php",
@@ -584,94 +368,455 @@ $active = 'inventario';
                     dataType: 'json',
                     success: async function(data) {
                         console.log(data);
-                        // $('#masivaProductoCreation').modal('hide')
-                        // $('#excelTable>tbody').empty()
-
-                        // let errMarcalLength = data.errMarca.length
-                        // let errItemCatLength = data.errHasItem.length
-                        // let sumErr = errMarcalLength + errItemCatLength
-                        // let total = data.total
-
-                        // if (sumErr === 0) {
-                        //     Swal.fire({
-                        //         icon: 'Success',
-                        //         title: 'Excelente',
-                        //         text: `Se han cargado todos los productos (${total})`
-                        //     })
-                        // } else {
-                        //     let thead = $('#errTable>thead')
-                        //     let tbody = $('#errTable>tbody')
-
-                        //     let theadTh = `<tr>
-                        //     <th>Nombre producto</th>
-                        // 	<th>marca</th>
-                        //     <th>modelo</th>
-                        //     <th>categoria asociada</th>
-                        //     <th>item asociado</th>
-                        //     <th>cantidad</th>
-                        //     <th>precio compra</th>
-                        //     <th>precio estimado arriendo</th>
-                        //     <th>Causa de error</th></tr>`
-
-                        //     thead.append(theadTh);
-
-                        //     let tbodyMarca;
-                        //     if (errMarcalLength > 0) {
-
-                        //         data.errMarca.forEach(value => {
-                        //             tbody.append(
-                        //                 `<tr>
-                        //             <td>${value.nombre}</td>
-                        //             <td>${value.marca}</td>
-                        //             <td>${value.modelo}</td>
-                        //             <td>${value.categoria}</td>
-                        //             <td>${value.item}</td>
-                        //             <td>${value.stock}</td>
-                        //             <td>${value.precioCompra}</td>
-                        //             <td>${value.precioArriendo}</td>
-                        //             <td>La marca no existe</td>
-                        //         </tr>`
-                        //             )
-                        //         });
-
-
-                        //     }
-                        //     let tbodyItem;
-                        //     if (errItemCatLength > 0) {
-
-                        //         data.errHasItem.forEach(value => {
-                        //             tbody.append(
-                        //                 `<tr>
-                        //                 <td>${value.nombre}</td>
-                        //                 <td>${value.marca}</td>
-                        //                 <td>${value.modelo}</td>
-                        //                 <td>${value.categoria}</td>
-                        //                 <td>${value.item}</td>
-                        //                 <td>${value.stock}</td>
-                        //                 <td>${value.precioCompra}</td>
-                        //                 <td>${value.precioArriendo}</td>
-                        //                 <td>Categoria / Item</td>
-                        //             </tr>`
-                        //             )
-                        //         })
-
-                        //     }
-                        //     $('#modalErrMasiva').modal('show')
-                        // }
-                    },
-                    error: function(data) {
-                        console.log(data.responseText);
                     }
                 })
 
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ups',
-                    text: 'Debe corregir los datos mal ingresado para continuar'
-                })
             }
         })
-    </script>
+    });
+
+
+    function AddCategoria(){
+        let string = $('#CatName').val()
+        if(string !== ""){
+
+            const arrayCategorias  = string.split(",")
+            $.ajax({
+                type: "POST",
+                url: "ws/categoria_item/categoria.php",
+                data: JSON.stringify({
+                    action: "AddCategorias",
+                    request: {arrayCategorias}
+                }),
+                dataType: 'json',
+                success: async function(data) {
+                    console.log(data);
+                }
+            })
+
+        }else{
+            console.log("INGRESE UN VALOR");
+        }
+    }
+    function AddItem(){
+        let string = $('#ItemName').val()
+        if(string !== ""){
+            const arrayItems  = string.split(",")
+            $.ajax({
+                type: "POST",
+                url: "ws/categoria_item/item.php",
+                data: JSON.stringify({
+                    action: "AddItems",
+                    request: {arrayItems}
+                }),
+                dataType: 'json',
+                success: async function(data) {
+                    console.log(data);
+                }
+            })
+
+        }else{
+            console.log("INGRESE UN VALOR");
+        }
+    }
+
+    $('.categoria').on('click', async function() {
+        let categoria = $(this).text().split(' ')[0];
+        let item = $(this).attr('class').split(' ')[1];
+
+        $.ajax({
+            type: "POST",
+            url: "ws/productos/Producto.php",
+            data: JSON.stringify({
+                action: "sortProducts",
+                requestJson: {
+                    categoria: categoria,
+                    item: item,
+                    tipo: "categoria"
+                }
+            }),
+            dataType: 'json',
+            success: async function(data) {
+                let tr = ''
+                data.forEach(value => {
+                    tr = `<tr class="centerText">
+                                    <td>${value.categoria}</td>
+                                    <td>${value.Item}</td>
+                                    <td>${value.nombre}</td>
+                                    <td></td>
+                                    <td>${value.cantidad}</td>
+                                    <td>Disponibles</td>
+                                    <td>${value.arriendo}</td>
+                                    <td>${value.compra}</td>
+                                    <td>estado</td>
+                                    <td><i class="fa-solid fa-trash"></i></td>
+                                </tr>`
+                    $('#tableProductos>tbody').append(tr);
+                });
+
+
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        })
+    })
+
+    $('.item').on('click', function() {
+        let categoria = $(this).attr('class').split(' ')[1];
+        let item = $(this).attr('class').split(' ')[0];
+
+        console.log(categoria);
+
+        $.ajax({
+            type: "POST",
+            url: "ws/productos/Producto.php",
+            data: JSON.stringify({
+                action: "sortProducts",
+                requestJson: {
+                    categoria: categoria,
+                    item: item,
+                    tipo: "item"
+                }
+            }),
+            dataType: 'json',
+            success: async function(data) {
+                console.log(data);
+                let tr = ''
+                $('#tableProductos>tbody').empty()
+                data.forEach(value => {
+                    tr = `<tr class="centerText">
+                                <td>${value.categoria}</td>
+                                <td>${value.Item}</td>
+                                <td>${value.nombre}</td>
+                                <td>${value.modelo}</td>
+                                <td>${value.cantidad}</td>
+                                <td>Disponibles</td>
+                                <td>${value.arriendo}</td>
+                                <td>${value.compra}</td>
+                                <td>estado</td>
+                                <td><i class="fa-solid fa-trash"></i></td>
+                            </tr>`
+                    $('#tableProductos>tbody').append(tr);
+                });
+
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        })
+    })
+
+    const dataArrayIndex = ['Nombre producto', 'marca', 'modelo', 'categoria asociada', 'item asociado', 'cantidad', 'precio compra', 'precio estimado arriendo']
+    const dataArray = {
+        'xlsxData': [{
+                'name': 'Nombre producto',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            },
+            {
+                'name': 'marca',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            },
+
+            {
+                'name': 'modelo',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': true
+            },
+
+            {
+                'name': 'categoria asociada',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            },
+
+            {
+                'name': 'item asociado',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 15,
+                'notNull': false
+            },
+
+            {
+                'name': 'cantidad',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            },
+
+            {
+                'name': 'precio compra',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            },
+
+            {
+                'name': 'precio estimado arriendo',
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 50,
+                'notNull': false
+            }
+        ]
+    }
+
+    //Funcion que verifica la extension del archivo ingresado
+    function GetFileExtension() {
+        fileName = $('#excel_input').val();
+        extension = fileName.split('.').pop();
+        return extension;
+    }
+
+    $('#excel_input').on('change', async function() {
+        const extension = GetFileExtension()
+        if (extension == "xlsx") {
+
+            const tableContent = await xlsxReadandWrite(dataArray);
+            let tableHead = $('#excelTable>thead')
+            let tableBody = $('#excelTable>tbody')
+            $('#masivaProductoCreation').modal('show')
+
+            //LIMPIAR TABLA
+            tableBody.empty()
+            tableHead.empty()
+            //LLENAR TABLA
+            tableHead.append(tableContent[0])
+            tableBody.append(tableContent[1])
+
+        } else(
+            Swal.fire({
+                icon: 'error',
+                title: 'Ups',
+                text: 'Debes cargar un Excel',
+            })
+        )
+    })
+
+
+    $('#excelTable>tbody').on('blur', 'td', function() {
+
+        let value = $(this).text()
+
+        //obtencion de las propiedades del TD
+        let tdListClass = $(this).attr("class").split(/\s+/);
+        let tdClass = tdListClass[0]
+        let tdPropertiesIndex = dataArrayIndex.indexOf(tdClass)
+        let tdProperties = dataArray.xlsxData[tdPropertiesIndex]
+
+        // SETEO DE PROPIEDADES
+        let type = tdProperties.type
+        let minlength = tdProperties.minlength
+        let maxlength = tdProperties.maxlength
+        let notNull = tdProperties.notNull
+
+        //OBTENCION DE PROPIEDADES DE VALOR DE CELDA
+
+        let tdType = isNumeric(value)
+        let tdMinlength = minLength(value, minlength)
+        let tdMaxlength = maxLength(value, maxlength)
+
+        let tdNull = isNull(value);
+
+        let errorCheck = false
+        let tdTitle = ""
+
+
+
+        //atributos return a td
+        if (!notNull && tdNull) {
+            errorCheck = false
+            tdTitle = "Ingrese un valor"
+
+        } else {
+
+            if (type === "string" && tdType) {
+                errorCheck = true
+            } else if (type === "int" && !tdType) {
+                errorCheck = false
+                tdTitle = "Ingrese un número"
+            } else {
+                errorCheck = true
+            }
+            if (!notNull) {
+                if (!tdMinlength) {
+                    tdTitle = `Debe tener un mínimo de ${minlength} caracteres`
+                    errorCheck = false
+                }
+                if (!tdMaxlength) {
+                    tdTitle = `Debe tener un máximo de ${maxlength} caracteres`
+                    errorCheck = false
+                }
+            } else {}
+        }
+        if (!errorCheck) {
+            $(this).prop('title', tdTitle)
+            $(this).addClass('err')
+        } else {
+            $(this).prop('title', "")
+            $(this).removeClass('err')
+        }
+    })
+
+    //Cerrar Modal
+    $('#modalClose').on('click', function() {
+        $('#masivaProductoCreation').modal('hide')
+    })
+
+
+
+    //GUARDAR REGISTROS MASIVA DENTRO DE MODAL
+    $('#saveExcelData').on('click', function() {
+        let counterErr = 0;
+
+        $('#excelTable>tbody td').each(function() {
+
+            var cellText = $(this).hasClass('err')
+            if (cellText) {
+                counterErr++
+            }
+
+        });
+
+        if (counterErr == 0) {
+
+            let arrTd = []
+            let preRequest = []
+
+            $('#excelTable>tbody tr').each(function() {
+
+                arrTd = []
+                let td = $(this).find('td')
+
+                td.each(function() {
+                    let tdTextValue = $(this).text()
+                    arrTd.push(tdTextValue)
+                })
+                preRequest.push(arrTd)
+            });
+
+            const arrayRequest = preRequest.map(function(value) {
+                let returnArray = {
+                    "nombre": value[0],
+                    "marca": value[1],
+                    "modelo": value[2],
+                    "categoria": value[3],
+                    "item": value[4],
+                    "stock": value[5],
+                    "precioCompra": value[6],
+                    "precioArriendo": value[7]
+                }
+                return returnArray
+            })
+
+            $.ajax({
+                type: "POST",
+                url: "ws/productos/addProductos.php",
+                data: JSON.stringify(arrayRequest),
+                dataType: 'json',
+                success: async function(data) {
+                    console.log(data);
+                    // $('#masivaProductoCreation').modal('hide')
+                    // $('#excelTable>tbody').empty()
+
+                    // let errMarcalLength = data.errMarca.length
+                    // let errItemCatLength = data.errHasItem.length
+                    // let sumErr = errMarcalLength + errItemCatLength
+                    // let total = data.total
+
+                    // if (sumErr === 0) {
+                    //     Swal.fire({
+                    //         icon: 'Success',
+                    //         title: 'Excelente',
+                    //         text: `Se han cargado todos los productos (${total})`
+                    //     })
+                    // } else {
+                    //     let thead = $('#errTable>thead')
+                    //     let tbody = $('#errTable>tbody')
+
+                    //     let theadTh = `<tr>
+                    //     <th>Nombre producto</th>
+                    // 	<th>marca</th>
+                    //     <th>modelo</th>
+                    //     <th>categoria asociada</th>
+                    //     <th>item asociado</th>
+                    //     <th>cantidad</th>
+                    //     <th>precio compra</th>
+                    //     <th>precio estimado arriendo</th>
+                    //     <th>Causa de error</th></tr>`
+
+                    //     thead.append(theadTh);
+
+                    //     let tbodyMarca;
+                    //     if (errMarcalLength > 0) {
+
+                    //         data.errMarca.forEach(value => {
+                    //             tbody.append(
+                    //                 `<tr>
+                    //             <td>${value.nombre}</td>
+                    //             <td>${value.marca}</td>
+                    //             <td>${value.modelo}</td>
+                    //             <td>${value.categoria}</td>
+                    //             <td>${value.item}</td>
+                    //             <td>${value.stock}</td>
+                    //             <td>${value.precioCompra}</td>
+                    //             <td>${value.precioArriendo}</td>
+                    //             <td>La marca no existe</td>
+                    //         </tr>`
+                    //             )
+                    //         });
+
+
+                    //     }
+                    //     let tbodyItem;
+                    //     if (errItemCatLength > 0) {
+
+                    //         data.errHasItem.forEach(value => {
+                    //             tbody.append(
+                    //                 `<tr>
+                    //                 <td>${value.nombre}</td>
+                    //                 <td>${value.marca}</td>
+                    //                 <td>${value.modelo}</td>
+                    //                 <td>${value.categoria}</td>
+                    //                 <td>${value.item}</td>
+                    //                 <td>${value.stock}</td>
+                    //                 <td>${value.precioCompra}</td>
+                    //                 <td>${value.precioArriendo}</td>
+                    //                 <td>Categoria / Item</td>
+                    //             </tr>`
+                    //             )
+                    //         })
+
+                    //     }
+                    //     $('#modalErrMasiva').modal('show')
+                    // }
+                },
+                error: function(data) {
+                    console.log(data.responseText);
+                }
+            })
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ups',
+                text: 'Debe corregir los datos mal ingresado para continuar'
+            })
+        }
+    })
+</script>
 
 </html>

@@ -7,6 +7,7 @@ require_once('./ws/productos/Producto.php');
 require_once('./ws/pais_region_comuna/Region.php');
 
 $empresaId = 1;
+$isDetails = false;
 
 // $obj = (object) array('idRegion' => 1);
 // // $comunas = getComunasByRegion($obj);
@@ -17,6 +18,9 @@ $personal =  getPersonal($empresaId);
 // $productos = getProductos($empresaId);
 $productos = [];
 $regiones = getRegiones();
+
+
+
 // $regiones = [];
 
 
@@ -29,9 +33,10 @@ $active = 'proximosEventos';
 ?>
 
 <body>
-<?php require_once('./includes/Constantes/empresaId.php')?>  
 
-<script src="./assets/js/initTheme.js"></script>
+  <?php require_once('./includes/Constantes/empresaId.php') ?>
+
+  <script src="./assets/js/initTheme.js"></script>
   <div id="app">
 
     <?php require_once('./includes/sidebar.php') ?>
@@ -73,7 +78,7 @@ $active = 'proximosEventos';
                       <label for="direccionInput">Direccion del proyecto</label>
                       <input autocomplete="off" type="text" class="form-control" name="txtDir" id="direccionInput" placeholder="Dirección">
                     </div>
-                    <div class="col-lg-3 col-md-12">
+                    <div class="col-lg-6 col-md-12">
                       <label for="inputNombreCliente">Nombre Cliente</label>
                       <input autocomplete="off" type="text" class="form-control" name="txtCliente" id="inputNombreCliente" placeholder="Cliente">
                     </div>
@@ -96,109 +101,7 @@ $active = 'proximosEventos';
         </div>
 
 
-        <div class="row">
-          <div class="card col-12 box box-productos">
-            <div class="row">
-              <div class="col-md-4 col-12 mt-4 mb-4">
-                <h4 data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" id="showProducts" aria-expanded="false" aria-controls="multiCollapseExample1">
-                  Asignar Equipamiento
-                </h4>
-              </div>
-            </div>
-
-            <div class="collapse multi-collapse" id="multiCollapseExample1">
-              <div class="card-body dragableItems">
-                <div class="row">
-                  <div class="col-8 notSelectedProd moveProd">
-                    <div id="itemList">
-                      <table id="tableProducts">
-                        <thead>                          
-                          <th style="display:none;">Id</th>
-                          <th>Nombre</th>
-                          <th>Cateogria</th>
-                          <th>Item</th>
-                          <th>Precio arriendo</th>
-                          <th>Stock</th>
-                          <th>Agregar</th>
-                        </thead>
-                        <tbody id="tableDrop">
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-
-                  <div class="col-4 selectedProd moveProd" id="tbodyReceive">
-                    <div id="receiveProducto" class="">
-                      <h3>Productos Asignados</h3>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row" data-bs-toggle="collapse" href="#multiCollapseExample2" role="button" id="showProducts" aria-expanded="false" aria-controls="multiCollapseExample2">
-          <div class="card col-12 box" style="max-height: 350px; overflow-x: hidden;">
-            <div class="row">
-              <div class="col-md-4 col-12 mt-4 mb-4">
-                <h4>
-                  Asignar Vehiculos
-                </h4>
-              </div>
-            </div>
-
-            <div class="collapse multi-collapse" id="multiCollapseExample2">
-              <?php require_once('./includes/dragAndDrop/dragVehiculos.php'); ?>
-            </div>
-
-          </div>
-        </div>
-
-
-        <div class="row" data-bs-toggle="collapse" href="#multiCollapseExample3" role="button" id="showProducts" aria-expanded="false" aria-controls="multiCollapseExample3">
-          <div class="card col-12 box" style="max-height: 350px; overflow-x: hidden;">
-            <div class="row">
-              <div class="col-md-4 col-12 mt-4 mb-4">
-                <h4>
-                  Asignar Vehiculos
-                </h4>
-              </div>
-            </div>
-
-            <div class="collapse multi-collapse" id="multiCollapseExample3">
-              <?php require_once('./includes/dragAndDrop/dragPersonal.php');?>
-            </div>
-
-          </div>
-        </div>
-        <div class="row" data-bs-toggle="collapse" href="#multiCollapseExample4" role="button" id="showProducts" aria-expanded="false" aria-controls="multiCollapseExample4">
-          <div class="card box">
-            <div class="row">
-              <div class="card-header col-12">
-                <h4>Resumen</h4>
-              </div>
-            </div>
-            <div class="row">
-            </div>
-          </div>
-        </div>
-          <div class="collapse multi-collapse card" id="multiCollapseExample4">
-            <div class="card-body">
-              <table id="tableResume">
-                <thead>
-                  <th class="" style="display: none;">Id</th>
-                  <th class="categoriaResume">Categoria</th>
-                  <th class="precioResume">Precio</th>
-                  <th class="cantidadResume">Cantidad</th>
-                </thead>
-                <tbody id="resumeBody">
-
-                </tbody>
-              </table>
-            </div>
-            </div>
-        </div>
+        <?php include_once('./includes/projectAssigments.php')?>
 
         <div class="card box">
           <div class="row" style="justify-content: end;">
@@ -224,44 +127,46 @@ $active = 'proximosEventos';
 
   <!-- REQUIRE DE FUNCIONES JS -->
   <script src="/js/Funciones/NewProject.js"></script>
+  <script src="/js/clientes.js"></script>
+  <script src="/js/direccion.js"></script>
+  <script src="/js/personal.js"></script>
+  <script src="/js/vehiculos.js"></script>
+  <script src="/js/productos.js"></script>
+  <script src="/js/valuesValidator/validator.js"></script>
+  <script src="/js/ClearData/clearFunctions.js"></script>
+  <script src="/js/localeStorage.js"></script>
+  <script src="/js/ProjectResume/projectResume.js"></script>
+  <script src="/js/ProjectResume/viatico.js"></script>
+  <script src="/js/ProjectResume/subArriendo.js"></script>
+  
+  
 
 </body>
 
 <script>
-
-
-  
-
   //BOTON DE TEST
   $('#verarray').on('click', function() {
+      localStorage.clear();
+      console.log("asdjhasd,jahkdsjhasd");
 
-    let arrayVehiclesID = []
-
-    $('#sortable2 > li').each(function() {
-          
-          let vClass = $(this).attr('class')[0]
-          console.log(vClass)
-          arrayVehiclesID.push({
-            idVehiculo: vClass
-          })
-        })
-
-      console.log(arrayVehiclesID);
-
-    //   $('.detailsProduct-box').each(function() {
-    //       let idProject = $(this).find('.itemId').text();
-    //       let productPrice = $(this).find('.getPrice').text();
-    //       let productQuantity = $(this).find('.addProdInput').val();
-    //       arrayProducts.push({
-    //         idProduct: idProject,
-    //         price: productPrice,
-    //         quantity:productQuantity
-    //       })
-    //   })
-
-
-  })
+    })
   //FIN BOTON TEST
+
+  $('#inputProjectName').on('change',function(){
+      $('.projectNameResume').text($(this).val());
+  })
+
+  $('#fechaInicio').on('change',function(){
+    $('.fechaProjectResume').text($(this).val())
+  })
+
+  $('#fechaTermino').on('change',function(){
+    $('.fechaProjectResume').text($('.fechaProjectResume').text() + '  /  ' + $(this).val())
+  })
+  $('#commentProjectArea').on('change',function(){
+    $('.comentariosProjectResume').text($(this).val())
+  })
+
 
   $(document).ready(function() {
     const EMPRESA_ID = document.getElementById('empresaId').textContent
@@ -279,104 +184,29 @@ $active = 'proximosEventos';
       connectWith: ".connectedSortablePersonal"
     }).disableSelection();
 
-    $('#tableResume').DataTable({
-            })
+    $('#tableResume').DataTable({})
+
     //fillvehiculos
-
-    $.ajax({
-        type: "POST",
-        url:"ws/vehiculo/Vehiculo.php",
-        dataType:'json',
-        data:JSON.stringify({"action":"getVehiculos",empresaId:EMPRESA_ID}),
-        success:function(response){
-          console.log("vehiculos",response);
-
-          response.forEach(vehiculo => {
-            let li = `<li class="${vehiculo.id}">${vehiculo.patente}</li>`
-            $('#sortable1').append(li)
-          });
-         }
-    })
-
+    FillVehiculos(EMPRESA_ID);
+    // Fill Clientes
+    FillClientes(EMPRESA_ID);
+    //FILL DIRECCIONES
+    FillDirecciones();
     //FILL PRODUCTOS
-    $.ajax({
-        type: "POST",
-        url:"ws/productos/Producto.php",
-        dataType:'json',
-        data:JSON.stringify({"action":"getProductos",empresaId:EMPRESA_ID}),
-        success:function(response){
-
-          console.log("response",response);
-          response.forEach(producto => {
-            let td = `
-            <td class="productId" style="display:none">${producto.id}</td>
-            <td class="productName">${producto.nombre}</td>
-            <td class=""> ${producto.categoria}</td>
-            <td class=""> ${producto.item}</td>
-            <td class="productPrice"> ${producto.precio_arriendo} </td>
-            <td class="" >${producto.cantidad}</td>
-            <td><input style="margin-right:8px" class="addProdInput quantityToAdd" id="" type="number" min="1" max="${producto.cantidad}"/><i class="fa-solid fa-plus addItem"></i></td>`
-            $('#tableDrop').append(`<tr id="${producto.id}">${td}</tr>`)
-          });
-
-          $('#tableProducts').DataTable({
-            })
-         }
-    })
-
-    //AGREGAR UN ITEM A LA TABLA DE RESUMEN A UN COSTADO DE 
-    //LA TABLA, CREA RESUMEN DEPENDIENDO DE LAS CANTIDADES, NOMBRE Y PRECIO DE ARRIENDO
-    $(document).on('click', '.addItem', function(){ 
-      let quantityToAdd = $(this).closest("td").find('.quantityToAdd').val()
-      let productId = $(this).closest("tr").find('.productId').text();
-      console.log("productId",productId);
-      let productName = $(this).closest("tr").find('.productName').text();
-      let productPrice = $(this).closest("tr").find('.productPrice').text();
-        console.log(quantityToAdd);
-        if(quantityToAdd === 0 || quantityToAdd === undefined || quantityToAdd === null || quantityToAdd === ""){
-          swal.fire()
-        }else{
-          AddDivProduct(productName,productPrice,productId,quantityToAdd)
-          let totalPrice = productPrice *  quantityToAdd;
-          let trResume = `<td class="idProd${productId}" style="display:none">${productId}</td>
-                          <td class="categoriaResume">${productName}</td>
-                          <td class="cantidadResume">${quantityToAdd}</td>
-                          <td class="precioResume"><input type"number" value="${totalPrice}"/></td>`;
-          $('#resumeBody').append(`<tr>${trResume}</tr>`);
-        }
-    }); 
-
-    $(document).on('click', '.logoRemove', function(){
-        let productId = $(this).closest('.detailsProduct-box').find('.itemId').text()
-        console.log(productId);
-        $(this).closest('.detailsProduct-box').remove()
-        $('#resumeBody').find(`.idProd${productId}`).remove();
-        console.log($('#resumeBody > tr').find(`.idProd${productId}`));
-    })
+    FillProductos(EMPRESA_ID);
+    //FILL PERSONAL
+    FillPersonal(EMPRESA_ID);
+    // CLEAR LOCALSTORGE
+    localStorage.clear();
 
 
+    $(document).on('click', '.logoRemove', function() {
+      let productId = $(this).closest('.detailsProduct-box').find('.itemId').text();
+      removeProduct(productId);
+      $(this).closest('.detailsProduct-box').remove()
+      $('#resumeBody').find(`.idProd${productId}`).remove();
+      console.log($('#resumeBody > tr').find(`.idProd${productId}`));
 
-    //VALIDACION DE CREACION DE CLIENTE PROYECTO
-    $('#clienteAddForm').validate({
-      rules: {
-        txtNombreCliente: {
-          required: true
-        }
-      },
-      messages: {
-        txtNombreCliente: {
-          required: "true"
-        }
-      },
-      submitHandler: function() {
-        event.preventDefault()
-        let nombre = $('#txtNombreCliente').val()
-        $('#inputNombreCliente').val(nombre)
-        $('#clienteModal').modal('hide')
-        let request = {
-          nombre: nombre
-        }
-      }
     })
 
     // VALIDAR FORM AGREGAR DIRECCION
@@ -410,21 +240,141 @@ $active = 'proximosEventos';
         }
       },
       submitHandler: function() {
+        
         event.preventDefault();
+        // localStorage.clear();
+        console.log("ENVIO DE INFORMACION DE PRODUCTO NUEVO UNITARIO");
 
+        //CREAR LOCALE STORAGE TO DIRECCIONES
         $("#direccionModal ").modal('hide');
         //DATOS DE DIRECCION
-        let dir = $('#txtDir').val()
-        let numDir = $('#txtNumDir').val()
-        let depto = $('#txtDepto').val()
-        let region = $('#regionSelect').val()
-        let comuna = $('#comunaSelect').val()
-        let regionInput = $('#regionSelect option:selected').text()
-        let comunaInput = $('#comunaSelect option:selected').text()
-        let postal_code = $('#txtcodigo_postal').val()
+        let dir = $('#txtDir').val();
+        let numDir = $('#txtNumDir').val();
+        let depto = $('#txtDepto').val();
+        let region = $('#regionSelect').val();
+        let comuna = $('#comunaSelect').val();
+        let regionInput = $('#regionSelect option:selected').text();
+        let comunaInput = $('#comunaSelect option:selected').text();
+        let postal_code = $('#txtcodigo_postal').val();
+        let idDireccion = $('#idDireccionModal').text();
 
-        $('#direccionInput').val(`${dir} ${numDir} ${depto}, ${comunaInput}, ${regionInput}`)
+        $('#direccionInput').val(`${dir} ${numDir} ${depto}, ${comunaInput}, ${regionInput}`);
+        $('.lugarProjectResume').text(`${dir} ${numDir} ${depto}, ${comunaInput}, ${regionInput}`);
+        
 
+        if(localStorage.getItem("direccion") === null){
+
+          localStorage.setItem("direccion", JSON.stringify([{dir,
+                                                            numDir,
+                                                            depto,
+                                                            region,
+                                                            comuna,
+                                                            regionInput,
+                                                            comunaInput,
+                                                            postal_code,
+                                                            idDireccion}]))
+        }else{
+
+          let allDirs = JSON.parse(localStorage.getItem("direccion"))
+          console.log("PRE PUSH",allDirs);
+          allDirs.push({dir,numDir,depto,region,comuna,regionInput,comunaInput,postal_code,idDireccion});
+          console.log("POST PUSH",allDirs);
+          localStorage.setItem("direccion",JSON.stringify(allDirs));
+
+        }
+
+
+        console.log(JSON.parse(localStorage.getItem('direccion')))
+        
+
+        // localStorage.setItem("direccion",JSON.stringify())
+        
+      }
+    })
+
+
+    // VALIDAR FORM CLIENTE Y DATOS DE FACTURACION
+    $('#clienteForm').validate({
+      rules: {
+        txtNombreCliente:{
+          required:true
+        },
+        txtApellidos:{
+          required:true
+        },
+        txtRut:{
+          required:true
+        },
+        txtCorreo:{
+          required:true
+        },
+        txtTelefono:{
+          required:true
+        },
+        txtRut:{
+          required:true
+        },
+        txtRazonSocial:{
+          required:true
+        },
+        txtNombreFantasia:{
+          required:true
+        },
+        txtDireccionDatosFacturacion:{
+          required:true
+        },
+        txtCorreoDatosFacturacion:{
+          required:true
+        }
+      },
+      messages: {
+        txtNombreCliente:{
+          required : "Ingrese un valor"
+        },
+        txtApellidos:{
+          required : "Ingrese un valor"
+        },
+        txtRut:{
+          required : "Ingrese un valor"
+        },
+        txtCorreo:{
+          required : "Ingrese un valor"
+        },
+        txtTelefono:{
+          required : "Ingrese un valor"
+        },
+        txtRut:{
+          required : "Ingrese un valor"
+        },
+        txtRazonSocial:{
+          required : "Ingrese un valor"
+        },
+        txtNombreFantasia:{
+          required : "Ingrese un valor"
+        },
+        txtDireccionDatosFacturacion:{
+          required : "Ingrese un valor"
+        },
+        txtCorreoDatosFacturacion:{
+          required : "Ingrese un valor"
+        }
+      },
+      submitHandler: function() {
+        event.preventDefault();
+        //DATOS DE CLIENTE
+        let nombreCliente = $('#inputNombreClienteForm').val();
+        let apellidos = $('#inputApellidos').val();
+        let rutCliente = $('#inputRutCliente').val();
+        let correo = $('#inputCorreo').val();
+        let telefono = $('#inputTelefono').val();
+        let rut = $('#inputRut').val();
+        let razonSocial = $('#inputRazonSocial').val();
+        let nombreFantasia = $('#inputNombreFantasia').val();
+        let direccionDatosFacturacion = $('#inputDireccionDatosFacturacion').val();
+        let correoDatosFacturacion = $('#inputCorreoDatosFacturacion').val();
+        $('#inputNombreCliente').val(`${nombreFantasia} | ${rut}`);
+        $(".clienteProjectResume").text(`${nombreFantasia} | ${rut}`);
+        $("#clienteModal ").modal('hide');
       }
     })
 
@@ -474,9 +424,42 @@ $active = 'proximosEventos';
         //CREAR CLIENTE PARA PROYECTO
         let idCliente;
         let nombre = $('#txtNombreCliente').val()
-        let requestCliente = {
-          nombre: nombre
+
+
+        let nombreCliente = $('#inputNombreClienteForm').val()
+        let apellidos = $('#inputApellidos').val()
+        let rutCliente = $('#inputRutCliente').val()
+        let correoCliente = $('#inputCorreo').val()
+        let telefono = $('#inputTelefono').val()
+        let rut = $('#inputRut').val()
+        let razonSocial = $('#inputRazonSocial').val()
+        let nombreFantasia = $('#inputNombreFantasia').val()
+        let direccionDatosFacturacion = $('#inputDireccionDatosFacturacion').val()
+        let correoDatosFacturacion = $('#inputCorreoDatosFacturacion').val()
+        let idClienteReq = $('#clienteSelect').val();
+        console.log("idCliente", idClienteReq);
+
+        if(idClienteReq === "" || idClienteReq === null || idClienteReq === undefined){
+          idClienteReq = "" 
         }
+
+
+        let requestCliente ={
+          empresaId : EMPRESA_ID,
+          nombreCliente :nombreCliente,
+          apellidos :apellidos,
+          rutCliente :rutCliente,
+          correoCliente :correoCliente,
+          telefono :telefono,
+          rut :rut,
+          razonSocial :razonSocial,
+          nombreFantasia :nombreFantasia,
+          direccionDatosFacturacion :direccionDatosFacturacion,
+          correoDatosFacturacion :correoDatosFacturacion,
+          idCliente : idClienteReq === "" ?  "" : parseInt(idClienteReq)
+        }
+
+        console.table(requestCliente);
 
         //DATOS DE DIRECCION
         let dir = $('#txtDir').val()
@@ -498,38 +481,43 @@ $active = 'proximosEventos';
           codigo_postal: postal_code,
           comuna: comuna
         }]
-        if($('#direccionInput').val() !== ""){
-          const resultDireccion = await Promise.all([addDir(requestDir), addCliente(requestCliente)])
-          id_direccion = resultDireccion[0].id_direccion
-        }
-        if($('#inputNombreCliente').val() !== ""){
-          const resultCliente = await Promise.all([addDir(requestDir), addCliente(requestCliente)])
-          idCliente = resultCliente[0].idCliente
 
-            let lugarRequest = [{
+
+
+        if ($('#direccionInput').val() !== "") {
+          const resultDireccion = await Promise.all([addDir(requestDir)]);
+
+          id_direccion = resultDireccion[0].id_direccion;
+
+          let lugarRequest = [{
             lugar: dir,
             direccion_id: id_direccion
-            }]
+          }]
+          const responseLugar = await Promise.all([addLugar(lugarRequest)]);
+
+          id_lugar = responseLugar[0].id_lugar;
+        }
+
+        if ($('#inputNombreCliente').val() !== "") {
+          console.table(requestCliente);
+          const resultCliente = await Promise.all([addCliente(requestCliente)])
+          idCliente = resultCliente[0].idCliente
 
           // DATOS PARA LA CRECION BASE DE UN PROYECTO
-          
+
           let direccion = $('#direccionInput').val();
           let nombreCliente = $('#inputNombreCliente').val();
-
-          const responseLugar = await Promise.all([addLugar(lugarRequest)])
-          id_lugar = responseLugar[0].id_lugar
         }
-
         
         //REQUEST LUGAR
-        if($('#inputNombreCliente').val() === ""){
+        if ($('#inputNombreCliente').val() === "") {
           idCliente = "";
         }
-        if($('#direccionInput').val() === ""){
+
+        if ($('#direccionInput').val() === "") {
           id_direccion = "";
           id_lugar = "";
         }
-
 
         let requestProject = {
           nombre_proyecto: projectName,
@@ -548,7 +536,7 @@ $active = 'proximosEventos';
 
         let arrayVehiclesID = []
         $('#sortable2 > li').each(function() {
-          
+
           let vClass = $(this).attr('class')
           console.log(vClass)
           arrayVehiclesID.push({
@@ -566,43 +554,138 @@ $active = 'proximosEventos';
         let arrayPersonal = []
         $('#sortablePersonal2 > li').each(function() {
           let vClass = $(this).attr('class')
+          let valor = $(this).find('.personalPrice').val()
           arrayPersonal.push({
-            idPersonal: vClass
+            idPersonal: vClass,
+            cost :valor
+            
           })
         })
         const requestPersonal = arrayPersonal.map(vId => {
           return {
             idProject: idProject,
-            idPersonal: vId.idPersonal
+            idPersonal: vId.idPersonal,
+            cost: vId.cost
           };
         })
 
         let arrayProducts = []
         $('.detailsProduct-box').each(function() {
-            let idProduct = $(this).find('.itemId').text();
-            let productPrice = $(this).find('.getPrice').text();
-            let productQuantity = $(this).find('.addProdInput').val();
-            arrayProducts.push({
-              idProject: idProject,
-              idProduct: idProduct,
-              price: productPrice,
-              quantity:productQuantity
-            })
+          let idProduct = $(this).find('.itemId').text();
+          let productPrice = $(this).find('.getPrice').text();
+          let productQuantity = $(this).find('.addProdInput').val();
+          arrayProducts.push({
+            idProject: idProject,
+            idProduct: idProduct,
+            price: productPrice,
+            quantity: productQuantity
+          })
         })
-        console.log(" 11222222222222223123123123",arrayProducts);
 
+        console.log("requestPersonal",requestPersonal);
+
+        const responseAssignPersonal = await Promise.all([assignvehicleToProject(requestVehicle), assignPersonal(requestPersonal), assignProduct(arrayProducts)])
+        response = responseAssignPersonal
+        
+        let arrayViaticos = $('#projectViatico > tbody tr .tbodyHeader');
+        if(arrayViaticos.length > 0){
+          $('#projectViatico > tbody tr .tbodyHeader').each((key,el)=>{
+              SetViatico(idProject,$(el).closest('tr').find('.totalViaticoInput').val() ,$(el).closest('tr').find('.inputViaticoName').val());
+          })
+          
+          let arrayViaticosRequest = GetProjectViaticos();
+          console.table("arrayViaticosRequest",arrayViaticosRequest);
+          if(arrayViaticosRequest !== false){
+               $.ajax({
+                type: "POST",
+                url: 'ws/personal/Personal.php',
+                data: JSON.stringify({
+                  action: 'setviatico', request: arrayViaticosRequest}),
+                dataType: 'json',
+                success: function (data) {
+
+                  console.log("RESPONSE AGIGNACION VIATICOS", data);
+
+                },
+                error: function (response) {
+                  console.log(response.responseText);
+                }
+              })
+          }
+        }
         
 
-        console.log("requestPersonal", requestPersonal);
-        console.log("requestVehicle", requestVehicle);
+        let arrayArriendos = $('#projectSubArriendos > tbody tr .tbodyHeader');
+        if(arrayArriendos.length > 0){
+          $('#projectSubArriendos > tbody tr .tbodyHeader').each((key,el)=>{
+            SetArriendosProject(idProject,$(el).closest('tr').find('.inputSubValue').val(),$(el).closest('tr').find('.inputSubDetalle').val() );
+          })
 
-        const responseAssignPersonal = await Promise.all([assignvehicleToProject(requestVehicle), assignPersonal(requestPersonal),assignProduct(arrayProducts)])
-        response = responseAssignPersonal
-        console.log("responseAssign", response);
+          let arriendosRequest = GetArriendosProject();
+          console.log("REQUEST DE ARRIENDOS",arriendosRequest);
+          if(arriendosRequest !== false){
+               $.ajax({
+                type: "POST",
+                url: 'ws/personal/Personal.php',
+                data: JSON.stringify({
+                  action: 'setArriendos', request: arriendosRequest}),
+                dataType: 'json',
+                success: function (data) {
+
+                  console.log("ARRIENDOS", data);
+
+                },
+                error: function (response) {
+                  console.log(response.responseText);
+                }
+              })
+          }
+        }
+
+
+
+        let totalIngresos = parseInt(ClpUnformatter($('#totalIngresos').text()));
+
+        if(totalIngresos === "" || totalIngresos === undefined || totalIngresos === null || totalIngresos === "$NaN"){
+          totalIngresos = 0
+        }
+        console.log("---------------------------------");
+        console.log(`totalProject ${totalIngresos}`);
+        console.log("---------------------------------");
+        let request = [{
+          idProject:idProject,
+          valor:totalIngresos
+        }];
+        $.ajax({
+          type: "POST",
+          url: 'ws/personal/Personal.php',
+          data: JSON.stringify({
+            action: 'SetTotalProject', request: request}),
+          dataType: 'json',
+          success: function (data) {
+
+            console.log("LOG", data);
+
+            Swal.fire({
+              position: 'bottom-end',
+              icon: 'success',
+              title: 'El proyecto ha sido creado exitosamente',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(()=>{
+              // window.location = "proyectos.php"
+            })
+
+          },
+          error: function (response) {
+            console.log(response.responseText);
+          }
+        })
+
       }
     })
   })
-
+  
   //OPEN MODAL DIRECCION
   $('#direccionInput').on('click', function() {
     $('#direccionModal').modal('show');
@@ -610,6 +693,13 @@ $active = 'proximosEventos';
   //OPEN MODAL CLIENTE
   $('#inputNombreCliente').on('click', function() {
     $('#clienteModal').modal('show');
+  })
+
+
+  // GUARDAR CLIENTE EN INPUT CLIENTE
+
+  $('#addCliente').on('click',function(){
+        
   })
 
 

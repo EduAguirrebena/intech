@@ -22,12 +22,12 @@
         $cargo = $value ->cargo;
         $especialidad = $value ->especialidad;
         $contrato = $value ->contrato;
+        $neto = $value->neto;
         $idPersona = 0;
         
         $queryPersona = "INSERT INTO intec.persona
                         (nombre, apellido, rut, email, telefono)
-                        VALUES('".$nombre." ', '".$apellido."', '".$correo."', '".$rut."', '$telefono')";
-
+                        VALUES('".$nombre." ', '".$apellido."', '".$rut."', '".$correo."', '$telefono')";
 
         $resposenBdPersona = $conn->mysqli->query($queryPersona);
         $idPersona = $conn->mysqli->insert_id;
@@ -45,8 +45,8 @@
         $idContrato = $value->id;
         
         $query = "INSERT INTO intec.personal
-                (persona_id, cargo_id, especialidad_id, tipo_contrato_id, createAt, IsDelete, empresa_id)
-                VALUES(".$idPersona.",".$idCargo.",".$idEspecialidad.",".$idContrato.",'".$today."',0,1)";
+                (persona_id, cargo_id, especialidad_id, tipo_contrato_id, createAt, IsDelete, empresa_id,neto)
+                VALUES(".$idPersona.",".$idCargo.",".$idEspecialidad.",".$idContrato.",'".$today."', 0, 1, $neto)";
 
         echo $idCargo;
         
